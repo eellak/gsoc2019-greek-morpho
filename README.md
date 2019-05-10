@@ -33,10 +33,10 @@ Addition of remaining parts of speech to the Morphological dictionary and
 
 ## Contributors
 
-Google summer of code participant: Konstantinos Agiannis
-Mentor: Kostas Papadimas
-Mentor: Diomidis Spinellis
-Mentor: Alexios Zavras
+* Google summer of code participant: Konstantinos Agiannis
+* Mentor: Kostas Papadimas
+* Mentor: Diomidis Spinellis
+* Mentor: Alexios Zavras
 
 ## Links
  * [Greek Wiktionary](https://el.wiktionary.org/)
