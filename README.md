@@ -17,6 +17,11 @@ python3 getpages.py
 python3 getpages.py production
 ```
 
+## License
+
+The source code is under GPLv3.
+The produced database with the morphological dictionary is under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)
+
 ## GSOC 2019 - Development of a Greek open source Morphological dictionary and application of it to Greek spelling tools
 
 ## Project goals
