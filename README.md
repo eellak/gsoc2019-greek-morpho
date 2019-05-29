@@ -1,4 +1,23 @@
-# GSOC 2019 - Development of a Greek open source Morphological dictionary and application of it to Greek spelling tools
+
+## Dependencies
+
+```
+pip3 install pymediawiki
+```
+
+## Run Testing
+
+```
+python3 getpages.py
+```
+
+## Run production
+
+```
+python3 getpages.py production
+```
+
+## GSOC 2019 - Development of a Greek open source Morphological dictionary and application of it to Greek spelling tools
 
 ## Project goals
 
@@ -39,6 +58,7 @@ Addition of remaining parts of speech to the Morphological dictionary and
 * Mentor: Alexios Zavras
 
 ## Links
+
  * [Greek Wiktionary](https://el.wiktionary.org/)
  * [hunspell documentation](https://www.systutorials.com/docs/linux/man/4-hunspell/)
  * [UD_GREEK-GDT](https://github.com/UniversalDependencies/UD_Greek-GDT/)
