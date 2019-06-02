@@ -53,6 +53,7 @@ cur.execute('''CREATE TABLE IF NOT EXISTS words(
 			form TEXT,
 			lemma TEXT,
 			pos TEXT,
+			greek_pos TEXT,
 			gender TEXT,
 			ptosi TEXT,
 			number TEXT,
@@ -63,14 +64,51 @@ cur.execute('''CREATE TABLE IF NOT EXISTS words(
 			verbform TEXT,
 			voice TEXT,
 			definite TEXT,
+			degree TEXT,
 			prontype TEXT,
+			poss TEXT,
 			tags TEXT,
 			freq INT)''')
 
+cur.execute('''CREATE TABLE IF NOT EXISTS def(
+			lemma TEXT,
+			def TEXT)''')
+
+cur.execute('''CREATE TABLE IF NOT EXISTS synonyms(
+			lemma TEXT,
+			syn TEXT)''')
+
+cur.execute('''CREATE TABLE IF NOT EXISTS related(
+			lemma TEXT,
+			rel TEXT)''')
+
+cur.execute('''CREATE TABLE IF NOT EXISTS etymology(
+			lemma TEXT,
+			rel TEXT)''')
+
+# TODO πχ αγαπημένος (υποστήριξη περισσότερων από ένα μέρος του λόγου)
+def parse_code(lemma,code):
+	res = re.search("=== Ετυμολογία ===\n[^\s]*\s*(?P<ETM>[^=\n]+?)\n",code,re.UNICODE)
+	if res != None:
+		string = "INSERT INTO etymology VALUES (\'%s\',\'%s\')" % (esc(lemma),esc(res.group("ETM")))
+		cur.execute(string)
+	else:
+		print("ETYMOLOGY NOT FOUND")
+	res = re.search("=== (Ουσιαστικό|Ρήμα|Επίθετο|Μετοχή|Κύριο\sόνομα|Πολυλεκτικός\sόρος) ===\n+[^\n]*\n+(?P<DEF>[^=]+?)(\n+==|\Z)",code,re.DOTALL|re.UNICODE)
+	if res != None:
+		string = "INSERT INTO def VALUES (\'%s\',\'%s\')" % (esc(lemma),esc(res.group("DEF")))
+		cur.execute(string)
+	else:
+		print("DEFINITION NOT FOUND")
+		print(code)
+
 def get_forms(s):
+	if 'a' in s:# if <a href ...> </a>
+		s = re.search(r"\>([ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ()]+)\<\/a\>", s).group(0)
 	all_forms = re.findall(r"[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ()]+", s)
 	res = []
 	for i in all_forms:
+		# print("form=",i)
 		if '(' in i:
 			tmp = ''
 			j = 0
@@ -79,6 +117,8 @@ def get_forms(s):
 				j+=1
 			if tmp != '':
 				res += [tmp]
+			if j > len(i):
+				break
 			j+=1
 			while i[j] != ')':
 				tmp += i[j]
@@ -104,14 +144,17 @@ def wword(form,lemma,pos,*args, **kwargs):
 	definite = kwargs.get('definite',None)
 	prontype = kwargs.get('prontype',None)
 	tags = kwargs.get('tags',None)
+	degree = kwargs.get('degree',None)
+	poss = kwargs.get('poss',None)
+	greek_pos = kwargs.get('greek_pos',None)
 	freq = kwargs.get('freq',0)
 
-	string = "INSERT INTO words VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',%d)"%(esc(form),esc(lemma),pos,gender,ptosi,number,person,tense,aspect,mood,verbform,voice,definite,prontype,tags,freq)
+	string = "INSERT INTO words VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',%d)"%(esc(form),esc(lemma),pos,greek_pos,gender,ptosi,number,person,tense,aspect,mood,verbform,voice,definite,degree,prontype,poss,tags,freq)
 	#print(string)
 	cur.execute(string)
 
 def is_complete(lemma,pos):
-	s = "SELECT form FROM words WHERE lemma = \'%s\' AND (true" % esc(lemma)
+	s = "SELECT form FROM words WHERE form = \'%s\' AND (true" % esc(lemma)
 	for i in pos:
 		s += " OR pos = \'%s\' " % esc(i)
 	cur.execute(s+')')
@@ -120,6 +163,12 @@ def is_complete(lemma,pos):
 		return True
 	return False
 
+def form_exists(form,pos):
+	cur.execute("SELECT form FROM words WHERE (form = \'%s\' AND pos = \'%s\')" % (esc(form),esc(pos)))
+	l = cur.fetchall()
+	if len(l) != 0:
+		return True
+	return False
 
 if False:
 	ptoseis = {
@@ -178,7 +227,7 @@ pos_transl = {
 	"κατι και εδω":"PART"#Μόρια
 }"""
 
-def print_forms(s,lemma,pos,genos,ptwsi,arithmos,tag):
+def print_forms(s,lemma,pos,genos,ptwsi,arithmos,degree,greek_pos,tag):
 	if s.strip() == '':
 		return
 	if 'PolyTerm' in tag:
@@ -186,9 +235,13 @@ def print_forms(s,lemma,pos,genos,ptwsi,arithmos,tag):
 	else:
 		tmp = get_forms(s)
 	for i in tmp:
-		wword(i.strip(),lemma,pos,gender=genos,ptosi=ptwsi,number=arithmos,tags=tag)
+		if pos == 'VERB':
+			 # Εδώ είναι οι μετοχές -μένος
+			wword(i.strip(),lemma,pos,gender=genos,ptosi=ptwsi,number=arithmos,degree=degree,greek_pos=greek_pos,aspect='Perf',verbform='Part',voice='Pass',tags=tag)
+		else:
+			wword(i.strip(),lemma,pos,gender=genos,ptosi=ptwsi,number=arithmos,degree=degree,greek_pos=greek_pos,tags=tag)
 	
-#Μερικά επίθετα έχουν μόνο ένα γένος πχ αβάζος
+# Μερικά επίθετα έχουν μόνο ένα γένος πχ αβάζος
 class AdjParser(HTMLParser):
 	i = False
 	td = False
@@ -201,6 +254,8 @@ class AdjParser(HTMLParser):
 	lemma = ''
 	tag = ''
 	detected = False
+	degree = None
+	greek_pos = None
 	grc = False
 	def handle_starttag(self, tag, attrs):
 		for first,second in attrs:
@@ -264,7 +319,7 @@ class AdjParser(HTMLParser):
 
 	def prop_print(self):
 		g = gender[self.genos%3]
-		print_forms(self.word,self.lemma,'ADJ',g,self.ptosi,self.arithmos,self.tag)
+		print_forms(self.word,self.lemma,self.part,g,self.ptosi,self.arithmos,self.degree,self.greek_pos,self.tag)
 		self.word = ''
 
 
@@ -274,6 +329,8 @@ class NounParser(HTMLParser):
 	th = False
 	ptosi = "ERROR"
 	arithmos = "ERROR"
+	degree = None
+	greek_pos = None
 	genos = 0
 	word = ''
 	lemma = ''
@@ -348,7 +405,7 @@ class NounParser(HTMLParser):
 			ar = self.arithmos
 		else:
 			ar = arithmoi[self.cur_arithmos%2]
-		print_forms(self.word,self.lemma,self.part,g,self.ptosi,ar,self.tag)
+		print_forms(self.word,self.lemma,self.part,g,self.ptosi,ar,self.degree,self.greek_pos,self.tag)
 		self.word = ''
 
 NotDetectedNoun = open("NotDetectedNoun.dic","a")
