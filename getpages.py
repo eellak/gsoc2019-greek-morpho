@@ -1,7 +1,10 @@
+# pip3 install pymediawiki
+# http://pymediawiki.readthedocs.io/en/latest/code.html
+
 import sys
 import re
 from mediawiki import MediaWiki
-from parse import AdjParser,parse_noun,wword,conn,is_complete,form_exists,parse_code,cur,esc
+from parse import AdjParser,parse_noun,wword,conn,is_complete,form_exists,parse_code,cur
 from verb import parse_verb
 mw = MediaWiki(url='https://el.wiktionary.org/w/api.php',timeout=100.0)
 
@@ -73,8 +76,8 @@ for title in participles:
 	html = page.html
 	lemma = title
 	if form_exists(title,'VERB'):#Αν το έχουμε βάλει
-		cur.execute("DELETE FROM words WHERE lemma = \'%s\'" % (esc(title)))
-		cur.execute('SELECT lemma FROM words WHERE form = \'%s\' AND pos = \'VERB\''%esc(title))
+		cur.execute("DELETE FROM words WHERE lemma = ?;" , (title,))
+		cur.execute('SELECT lemma FROM words WHERE form = ? AND pos = \'VERB\'',(title,))
 		r = cur.fetchall()
 		lemma = r[0][0]
         #ΤΟΔΟ βάλε ως λήμμα το ρήμα

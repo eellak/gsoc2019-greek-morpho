@@ -1,7 +1,3 @@
-#TODO gender detection needs work
-# detect only {{αθ}} for both genders
-# τρίχα λάθος γένος
-# Πρόσθεσε γένος ακόμα και αν δεν βρέθηκε πίνακας
 from html.parser import HTMLParser
 from html.entities import name2codepoint
 import sys
@@ -53,7 +49,7 @@ Tense
 VerbForm
 Voice'''
 
-with open("scema.sql") as file:
+with open("schema.sql") as file:
 	script = file.read()
 	cur.executescript(script)
 	conn.commit()
@@ -62,14 +58,12 @@ with open("scema.sql") as file:
 def parse_code(lemma,code):
 	res = re.search("=== Ετυμολογία ===\n[^\s]*\s*(?P<ETM>[^=\n]+?)\n",code,re.UNICODE)
 	if res != None:
-		string = "INSERT INTO etymology VALUES (\'%s\',\'%s\')" % (esc(lemma),esc(res.group("ETM")))
-		cur.execute(string)
+		cur.execute("INSERT INTO etymology VALUES (?,?)" , (lemma,res.group("ETM")))
 	else:
 		print("ETYMOLOGY NOT FOUND")
 	res = re.search("=== (Ουσιαστικό|Ρήμα|Επίθετο|Μετοχή|Κύριο\sόνομα|Πολυλεκτικός\sόρος) ===\n+[^\n]*\n+(?P<DEF>[^=]+?)(\n+==|\Z)",code,re.DOTALL|re.UNICODE)
 	if res != None:
-		string = "INSERT INTO def VALUES (\'%s\',\'%s\')" % (esc(lemma),esc(res.group("DEF")))
-		cur.execute(string)
+		cur.execute("INSERT INTO def VALUES (?,?)" , (lemma,res.group("DEF")))
 	else:
 		print("DEFINITION NOT FOUND")
 		print(code)
@@ -100,8 +94,9 @@ def get_forms(s):
 			res += [i]
 	return res
 
+
 def esc(s):
-	return s.translate(str.maketrans({"'":  r"''"}))
+	return s.translate(str.maketrans({"'": r"''"}))
 
 def wword(form,lemma,pos,*args, **kwargs):
 	gender = kwargs.get('gender',None)
@@ -121,9 +116,7 @@ def wword(form,lemma,pos,*args, **kwargs):
 	greek_pos = kwargs.get('greek_pos',None)
 	freq = kwargs.get('freq',0)
 
-	string = "INSERT INTO words VALUES (\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',\'%s\',%d)"%(esc(form),esc(lemma),pos,greek_pos,gender,ptosi,number,person,tense,aspect,mood,verbform,voice,definite,degree,prontype,poss,tags,freq)
-	#print(string)
-	cur.execute(string)
+	cur.execute("INSERT INTO words VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(form,lemma,pos,greek_pos,gender,ptosi,number,person,tense,aspect,mood,verbform,voice,definite,degree,prontype,poss,tags,freq))
 
 def is_complete(lemma,pos):
 	s = "SELECT form FROM words WHERE form = \'%s\' AND tags <> 'Incomplete' AND (true" % esc(lemma)
@@ -136,7 +129,7 @@ def is_complete(lemma,pos):
 	return False
 
 def form_exists(form,pos):
-	cur.execute("SELECT form FROM words WHERE (form = \'%s\' AND pos = \'%s\')" % (esc(form),esc(pos)))
+	cur.execute("SELECT form FROM words WHERE (form = ? AND pos = ?)" , (form,pos))
 	l = cur.fetchall()
 	if len(l) != 0:
 		return True
