@@ -1,6 +1,6 @@
 import re
 import sys
-from parse import get_forms,wword,cur,form_exists,esc
+from parse import get_forms,wword,cur,form_exists
 
 energ = """\<center\>\ \Ε\ξ\α\κ\ο\λ\ο\υ\θ\η\τ\ι\κ\ο\ί\ \χ\ρ\ό\ν\ο\ι\ \<\/center\>
 \<\/th\>\<\/tr\>
@@ -315,7 +315,7 @@ def parse_verb(html,code,lemma):
 	for a in re.finditer(energ,html,re.DOTALL|re.UNICODE):
 		detected = 1
 		if v == 'Pass' and form_exists(a.group('ENEST_A_ENIKO'),'VERB'):#Αν έχουμε βάλει το παθητικό λήμμα
-			cur.execute("DELETE FROM words WHERE lemma = \'%s\'"%(esc(a.group('ENEST_A_ENIKO'))))
+			cur.execute("DELETE FROM words WHERE lemma = ?",(a.group('ENEST_A_ENIKO'),))
 
 		if v == 'Pass':
 			met = re.search(metoxi,html,re.DOTALL|re.UNICODE)
@@ -398,5 +398,4 @@ def parse_verb(html,code,lemma):
 	
 	if detected == 0:
 		wword(lemma,lemma,'VERB',tags="Incomplete")
-
 
