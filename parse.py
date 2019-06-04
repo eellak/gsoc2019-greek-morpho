@@ -1,3 +1,7 @@
+#TODO gender detection needs work
+# detect only {{αθ}} for both genders
+# τρίχα λάθος γένος
+# Πρόσθεσε γένος ακόμα και αν δεν βρέθηκε πίνακας
 from html.parser import HTMLParser
 from html.entities import name2codepoint
 import sys
@@ -49,49 +53,10 @@ Tense
 VerbForm
 Voice'''
 
-cur.executescript('''
-CREATE TABLE IF NOT EXISTS words(
-form TEXT,
-lemma TEXT,
-pos TEXT,
-greek_pos TEXT,
-gender TEXT,
-ptosi TEXT,
-number TEXT,
-person NUM,
-tense TEXT,
-aspect TEXT,
-mood TEXT,
-verbform TEXT,
-voice TEXT,
-definite TEXT,
-degree TEXT,
-prontype TEXT,
-poss TEXT,
-tags TEXT,
-freq INT
-);
-
-CREATE TABLE IF NOT EXISTS def(
-lemma TEXT,
-def TEXT
-);
-
-CREATE TABLE IF NOT EXISTS synonyms(
-lemma TEXT,
-syn TEXT
-);
-
-CREATE TABLE IF NOT EXISTS related(
-lemma TEXT,
-rel TEXT
-);
-
-CREATE TABLE IF NOT EXISTS etymology(
-lemma TEXT,
-rel TEXT
-);
-''')
+with open("scema.sql") as file:
+	script = file.read()
+	cur.executescript(script)
+	conn.commit()
 
 # TODO πχ αγαπημένος (υποστήριξη περισσότερων από ένα μέρος του λόγου)
 def parse_code(lemma,code):
