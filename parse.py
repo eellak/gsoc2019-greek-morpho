@@ -49,42 +49,49 @@ Tense
 VerbForm
 Voice'''
 
-cur.execute('''CREATE TABLE IF NOT EXISTS words(
-			form TEXT,
-			lemma TEXT,
-			pos TEXT,
-			greek_pos TEXT,
-			gender TEXT,
-			ptosi TEXT,
-			number TEXT,
-			person NUM,
-			tense TEXT,
-			aspect TEXT,
-			mood TEXT,
-			verbform TEXT,
-			voice TEXT,
-			definite TEXT,
-			degree TEXT,
-			prontype TEXT,
-			poss TEXT,
-			tags TEXT,
-			freq INT)''')
+cur.executescript('''
+CREATE TABLE IF NOT EXISTS words(
+form TEXT,
+lemma TEXT,
+pos TEXT,
+greek_pos TEXT,
+gender TEXT,
+ptosi TEXT,
+number TEXT,
+person NUM,
+tense TEXT,
+aspect TEXT,
+mood TEXT,
+verbform TEXT,
+voice TEXT,
+definite TEXT,
+degree TEXT,
+prontype TEXT,
+poss TEXT,
+tags TEXT,
+freq INT
+);
 
-cur.execute('''CREATE TABLE IF NOT EXISTS def(
-			lemma TEXT,
-			def TEXT)''')
+CREATE TABLE IF NOT EXISTS def(
+lemma TEXT,
+def TEXT
+);
 
-cur.execute('''CREATE TABLE IF NOT EXISTS synonyms(
-			lemma TEXT,
-			syn TEXT)''')
+CREATE TABLE IF NOT EXISTS synonyms(
+lemma TEXT,
+syn TEXT
+);
 
-cur.execute('''CREATE TABLE IF NOT EXISTS related(
-			lemma TEXT,
-			rel TEXT)''')
+CREATE TABLE IF NOT EXISTS related(
+lemma TEXT,
+rel TEXT
+);
 
-cur.execute('''CREATE TABLE IF NOT EXISTS etymology(
-			lemma TEXT,
-			rel TEXT)''')
+CREATE TABLE IF NOT EXISTS etymology(
+lemma TEXT,
+rel TEXT
+);
+''')
 
 # TODO πχ αγαπημένος (υποστήριξη περισσότερων από ένα μέρος του λόγου)
 def parse_code(lemma,code):
@@ -154,7 +161,7 @@ def wword(form,lemma,pos,*args, **kwargs):
 	cur.execute(string)
 
 def is_complete(lemma,pos):
-	s = "SELECT form FROM words WHERE form = \'%s\' AND (true" % esc(lemma)
+	s = "SELECT form FROM words WHERE form = \'%s\' AND tags <> 'Incomplete' AND (true" % esc(lemma)
 	for i in pos:
 		s += " OR pos = \'%s\' " % esc(i)
 	cur.execute(s+')')
