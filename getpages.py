@@ -10,25 +10,26 @@ NotDetectedAdj = open("NotDetectedAdj.dic","a")
 print('Getting lemmas')
 
 if len(sys.argv) == 2 and sys.argv[1] == 'production':
-	nouns = mw.categorymembers(category='Ουσιαστικά (ελληνικά)',results=100000,subcategories=False)#πρέπει να βάλουμε πολυλεκτικούς όρους
-	proper_nouns = mw.categorymembers(category='Κύρια ονόματα (ελληνικά)',results=100000,subcategories=False)
-	adj = mw.categorymembers(category='Επίθετα (ελληνικά)',results=100000,subcategories=False)
-	verbs = mw.categorymembers(category='Ρήματα (ελληνικά)',results=1000000,subcategories=False)
+	nouns = mw.categorymembers(category='Ουσιαστικά (νέα ελληνικά)',results=100000,subcategories=False)#πρέπει να βάλουμε πολυλεκτικούς όρους
+	proper_nouns = mw.categorymembers(category='Κύρια ονόματα (νέα ελληνικά)',results=100000,subcategories=False)
+	adj = mw.categorymembers(category='Επίθετα (νέα ελληνικά)',results=100000,subcategories=False)
+	verbs = mw.categorymembers(category='Ρήματα (νέα ελληνικά)',results=1000000,subcategories=False)
+	participles = mw.categorymembers(category='Μετοχές (νέα ελληνικά)',results=100000,subcategories=False)#είτε άκλιτες,είτε κλιτές πχ χαρούμενος
 	num_download = 1000000
 else:
 	#Tests
 	adj = ['ομορφότερος','μέγιστος','ανώμαλος','πράσινος','ταχύς','αβάζος','διπύρηνος','μακρύς']
 	nouns = ['τελωνείο','σύμμαχος','ανώμαλος','διάκεντρος','Ααρών','σκληρός δίσκος','Αρμαγεδδώνας','ρουλεμάν','Κολοκοτρώνης','γιατρός','σεληνοτοπογράφος','Ανδρέας','Μαρία','Αθήνα','Λάρισα','Ελλάδα','δέκα','άνθρακας','εδεσματολόγιο']
 	verbs = ['αγριοκοιτάω','αγριοκοιτιέμαι','παραποιώ','φρενάρω','λύνω','αγαπιέμαι','αγαπώ','είμαι','διασπώ']
+	participles = ['αγαπημένος','αγαπώντας','φρενάροντας','ζητούμενος']
 	proper_nouns = []
 	num_download = 20
 
-prs = mw.categorymembers(category='Προθέσεις (ελληνικά)',results=num_download,subcategories=False)
-advs = mw.categorymembers(category='Επιρρήματα (ελληνικά)',results=num_download,subcategories=False)
-participles = mw.categorymembers(category='Μετοχές (ελληνικά)',results=10,subcategories=False)#είτε άκλιτες,είτε κλιτές πχ χαρούμενος
-acr = mw.categorymembers(category='Συντομομορφές (ελληνικά)',results=num_download,subcategories=False)#Άλλο ακρονύμιο,άλλο αρκτικόλεξο
-protheseis = mw.categorymembers(category='Προθέσεις_(ελληνικά)',results=num_download,subcategories=False)
-moria = mw.categorymembers(category='Μόρια_(ελληνικά)',results=num_download,subcategories=False)
+prs = mw.categorymembers(category='Προθέσεις (νέα ελληνικά)',results=num_download,subcategories=False)
+advs = mw.categorymembers(category='Επιρρήματα (νέα ελληνικά)',results=num_download,subcategories=False)
+acr = mw.categorymembers(category='Συντομομορφές (νέα ελληνικά)',results=num_download,subcategories=False)#Άλλο ακρονύμιο,άλλο αρκτικόλεξο
+protheseis = mw.categorymembers(category='Προθέσεις_(νέα ελληνικά)',results=num_download,subcategories=False)
+moria = mw.categorymembers(category='Μόρια_(νέα ελληνικά)',results=num_download,subcategories=False)
 
 
 print(len(nouns),' nouns')
@@ -62,6 +63,7 @@ for title in verbs:
 	print()
 
 for title in participles:
+	print('title %s:' % title)
 	padj = AdjParser()
 	padj.part = "VERB"
 	if is_complete(title,['VERB']):
@@ -69,9 +71,21 @@ for title in participles:
 	page = get_page(title)
 	print('parsing ' + title,end='')
 	html = page.html
-	padj.lemma = title
+	lemma = title
 	if form_exists(title,'VERB'):#Αν το έχουμε βάλει
-			cur.execute("DELETE FROM words WHERE lemma = \'%s\'" % (esc(title)))
+		cur.execute("DELETE FROM words WHERE lemma = \'%s\'" % (esc(title)))
+		cur.execute('SELECT lemma FROM words WHERE form = \'%s\' AND pos = \'VERB\''%esc(title))
+		r = cur.fetchall()
+		lemma = r[0][0]
+        #ΤΟΔΟ βάλε ως λήμμα το ρήμα
+	res = re.search('μετοχή παθητικού (ενεστώτα|παρακειμένου) του ρήματος \<a href=\"[^\"]+?\" title=\"(?P<LEMMA>[^\"]+?)\"\>.+?\<\/a>',html,re.UNICODE|re.DOTALL)
+
+	if  res != None:
+		lemma = res.group('LEMMA')
+	res = re.search('μετοχή\<\/a\> \<a href=\"\/wiki\/\%CE\%B5\%CE\%BD\%CE\%B5\%CF\%83\%CF\%84\%CF\%8E\%CF\%84\%CE\%B1\%CF\%82\" title=\"ενεστώτας\"\>ενεστώτα\<\/a\> του \<i\>\<a href=\"[^\"]+?\" title=\"(?P<LEMMA>[^\"]+?)\">[^\"]+?\<\/a\>',html,re.UNICODE|re.DOTALL)
+	if res != None:
+		lemma = res.group('LEMMA')
+	padj.lemma = lemma
 	padj.feed(html)
 	#if padj.detected == False:
 	#	print('[[' + title + ']]',file=NotDetectedAdj)
@@ -92,14 +106,14 @@ for title in adj:
 		print(' συγκριτικός: ' + syg.group("lemma"),end='')
 		title = syg.group("lemma")
 		padj.degree = "Cmp"
-	
+
 	uperthetikos = "title=\"υπερθετικός\"\>υπερθετικός\</a\> βαθμός του\<i\> \<a href=\"/wiki/.*?\" title=\".*?\"\>(?P<lemma>[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ]+)\</a\>"
 	sup = re.search(uperthetikos,html,re.UNICODE)
 	if sup != None:
 		print(' υπερθετικός: ' + sup.group("lemma"),end='')
 		title = sup.group("lemma")
 		padj.degree = "Sup"
-	
+
 	padj.lemma = title
 	padj.part = 'ADJ'
 	padj.feed(html)
@@ -155,7 +169,7 @@ for title in nouns:
 			tag = id_add(tag,'Element')
 		if c == 'Κατηγορία:Πληροφορική_(ελληνικά)':
 			tag = id_add(tag,'Informatics')
-			
+
 	parse_noun(html,title,part,tag)
 	conn.commit()
 	print()
@@ -164,7 +178,7 @@ for word in prs:
 	if is_complete(word,['PRON']):
 		continue
 	wword(word,word,'PRON')
-	
+
 for word in advs:
 	if is_complete(word,['ADV']):
 		continue
@@ -185,5 +199,6 @@ for word in acr:
 	if is_complete(word,['Abbr']):
 		continue
 	wword(word,word,'Abbr')
+
 #TODO Αριθμητικά
 conn.commit()
