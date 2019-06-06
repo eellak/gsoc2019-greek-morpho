@@ -94,10 +94,6 @@ def get_forms(s):
 			res += [i]
 	return res
 
-
-def esc(s):
-	return s.translate(str.maketrans({"'": r"''"}))
-
 def wword(form,lemma,pos,*args, **kwargs):
 	gender = kwargs.get('gender',None)
 	ptosi = kwargs.get('ptosi',None)
@@ -119,10 +115,11 @@ def wword(form,lemma,pos,*args, **kwargs):
 	cur.execute("INSERT INTO words VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(form,lemma,pos,greek_pos,gender,ptosi,number,person,tense,aspect,mood,verbform,voice,definite,degree,prontype,poss,tags,freq))
 
 def is_complete(lemma,pos):
-	s = "SELECT form FROM words WHERE form = \'%s\' AND tags <> 'Incomplete' AND (true" % esc(lemma)
+	# We dont need escape for pos
+	s = "SELECT form FROM words WHERE form = ? AND tags <> 'Incomplete' AND (true"
 	for i in pos:
-		s += " OR pos = \'%s\' " % esc(i)
-	cur.execute(s+')')
+		s += " OR pos = \'%s\' " % i
+	cur.execute(s+')',(lemma,))
 	l = cur.fetchall()
 	if len(l) != 0:
 		return True
