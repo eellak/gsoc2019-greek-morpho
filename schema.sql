@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS words(
-	form TEXT,
-	lemma TEXT,
-	pos TEXT,
+	form TEXT NOT NULL,
+	lemma TEXT NOT NULL,
+	pos TEXT NOT NULL,
 	greek_pos TEXT,
 	gender TEXT,
 	ptosi TEXT,

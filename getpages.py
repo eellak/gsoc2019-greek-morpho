@@ -31,8 +31,8 @@ else:
 prs = mw.categorymembers(category='Προθέσεις (νέα ελληνικά)',results=num_download,subcategories=False)
 advs = mw.categorymembers(category='Επιρρήματα (νέα ελληνικά)',results=num_download,subcategories=False)
 acr = mw.categorymembers(category='Συντομομορφές (νέα ελληνικά)',results=num_download,subcategories=False)#Άλλο ακρονύμιο,άλλο αρκτικόλεξο
-protheseis = mw.categorymembers(category='Προθέσεις_(νέα ελληνικά)',results=num_download,subcategories=False)
-moria = mw.categorymembers(category='Μόρια_(νέα ελληνικά)',results=num_download,subcategories=False)
+protheseis = mw.categorymembers(category='Προθέσεις (νέα ελληνικά)',results=num_download,subcategories=False)
+moria = mw.categorymembers(category='Μόρια (νέα ελληνικά)',results=num_download,subcategories=False)
 
 
 print(len(nouns),' nouns')
@@ -89,6 +89,7 @@ for title in participles:
 	if res != None:
 		lemma = res.group('LEMMA')
 	padj.lemma = lemma
+	padj.greek_pos = 'METOXI_PP'
 	padj.feed(html)
 	#if padj.detected == False:
 	#	print('[[' + title + ']]',file=NotDetectedAdj)
@@ -146,7 +147,7 @@ for title in nouns:
 	tag = ''
 	#Αν ο τίτλος έχει παραπάνω από μία λέξεις βάλε PolyTerm
 	for c in categories:
-		if c == 'Κατηγορία:Κύρια ονόματα (ελληνικά)':
+		if c == 'Κατηγορία:Κύρια ονόματα (νέα ελληνικά)':
 			part = 'PROPN'
 	for c in categories:
 		if c == 'Κατηγορία:Πολυλεκτικοί όροι (ελληνικά)':
@@ -159,7 +160,7 @@ for title in nouns:
 			tag = id_add(tag,'Top')
 			tag = id_add(tag,'Capital')
 			tag = id_add(tag,'Europe')
-		if c in ['Κατηγορία:Γυναικεία ονόματα (ελληνικά)','Κατηγορία:Ανδρικά ονόματα (ελληνικά)']:
+		if c in ['Κατηγορία:Γυναικεία ονόματα (νέα ελληνικά)','Κατηγορία:Ανδρικά ονόματα (νέα ελληνικά)']:
 			tag = id_add(tag,'Ant')
 		if c == 'Κατηγορία:Χώρες (ελληνικά)':
 			tag = id_add(tag,'Top')
@@ -168,7 +169,7 @@ for title in nouns:
 			tag = id_add(tag,'Top')
 			tag = id_add(tag,'Top')
 			tag = id_add(tag,'EuropeanUnion')
-		if c == 'Κατηγορία:Χημικά στοιχεία στα ελληνικά':
+		if c == 'Κατηγορία:Χημικά στοιχεία (ελληνικά)':
 			tag = id_add(tag,'Element')
 		if c == 'Κατηγορία:Πληροφορική_(ελληνικά)':
 			tag = id_add(tag,'Informatics')
@@ -197,11 +198,11 @@ for word in moria:
 		continue
 	wword(word,word,'PART')
 
-#TODO Abbr is not a POS
+# we assume noun as in UD_GREEK
 for word in acr:
-	if is_complete(word,['Abbr']):
+	if is_complete(word,['NOUN']):
 		continue
-	wword(word,word,'Abbr')
+	wword(word,word,'NOUN',tags='Abbr')
 
 #TODO Αριθμητικά
 conn.commit()
