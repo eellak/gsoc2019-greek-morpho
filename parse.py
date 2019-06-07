@@ -110,7 +110,7 @@ def wword(form,lemma,pos,*args, **kwargs):
 	degree = kwargs.get('degree',None)
 	poss = kwargs.get('poss',None)
 	greek_pos = kwargs.get('greek_pos',None)
-	freq = kwargs.get('freq',0)
+	freq = kwargs.get('freq',None)
 
 	cur.execute("INSERT INTO words VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(form,lemma,pos,greek_pos,gender,ptosi,number,person,tense,aspect,mood,verbform,voice,definite,degree,prontype,poss,tags,freq))
 
