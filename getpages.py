@@ -33,7 +33,7 @@ advs = mw.categorymembers(category='Επιρρήματα (νέα ελληνικ�
 acr = mw.categorymembers(category='Συντομομορφές (νέα ελληνικά)',results=num_download,subcategories=False)#Άλλο ακρονύμιο,άλλο αρκτικόλεξο
 protheseis = mw.categorymembers(category='Προθέσεις (νέα ελληνικά)',results=num_download,subcategories=False)
 moria = mw.categorymembers(category='Μόρια (νέα ελληνικά)',results=num_download,subcategories=False)
-
+num = mw.categorymembers(category='Αριθμητικά (νέα ελληνικά)',results=num_download,subcategories=False) # τακτικά, απόλυτα
 
 print(len(nouns),' nouns')
 print(len(proper_nouns),' proper nouns')
@@ -42,6 +42,8 @@ print(len(verbs),' verbs')
 print(len(prs),' prepositions')
 print(len(advs),' adverbs')
 print(len(acr),' acronyms')
+print(len(num),' num')
+
 nouns = nouns + proper_nouns
 
 def get_page(title):
@@ -66,11 +68,11 @@ for title in verbs:
 	print()
 
 for title in participles:
+	if is_complete(title,['VERB']):
+		continue
 	print('title %s:' % title)
 	padj = AdjParser()
 	padj.part = "VERB"
-	if is_complete(title,['VERB']):
-		continue
 	page = get_page(title)
 	print('parsing ' + title,end='')
 	html = page.html
@@ -98,11 +100,11 @@ for title in participles:
 	print()
 
 for title in adj:
-	padj = AdjParser()
 	if is_complete(title,['ADJ']):
 		continue
+	padj = AdjParser()
 	page = get_page(title)
-	print('parsing ' + title,end='')
+	print('parsing %s' % title,end='')
 	html = page.html
 	sygritikos = "title=\"συγκριτικός\"\>συγκριτικός\</a\> βαθμός του \<i\>\<a href=\"/wiki/.*?\" title=\".*?\"\>(?P<lemma>[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ]+)\</a\>"
 	syg = re.search(sygritikos,html,re.UNICODE)
@@ -204,5 +206,20 @@ for word in acr:
 		continue
 	wword(word,word,'NOUN',tags='Abbr')
 
-#TODO Αριθμητικά
+# Αριθμητικά
+# TODO τακτικά κτλ
+for title in num:
+	if is_complete(title,['NUM']):
+		continue
+	padj = AdjParser()
+	print('parsing %s'% title)
+	page = get_page(title)
+	html = page.html
+	padj.lemma = title
+	padj.part = 'NUM'
+	padj.feed(html)
+	if padj.detected == False:
+		wword(title,title,'NUM')
+	conn.commit()
+
 conn.commit()
