@@ -132,46 +132,25 @@ def form_exists(form,pos):
 		return True
 	return False
 
-if False:
-	ptoseis = {
-		"ονομαστική": "nom",
-		"γενική": "gen",
-		"αιτιατική": "acc",
-		"κλητική": "voc"
-	}
+ptoseis = {
+	"ονομαστική": "Nom",
+	"γενική": "Gen",
+	"αιτιατική": "Acc",
+	"κλητική": "Voc"
+}
+arithmoi = {
+	"ενικός" : "Sing",
+	"πληθυντικός" : "Plur",
+	0 : 'Sing',
+	1 : 'Plur'
+}
 
-	arithmoi = {
-		"ενικός" : "sg",
-		"πληθυντικός" : "pl",
-		0 : 'sg',
-		1 : 'pl'
-	}
+gender = {
+	0 : "Masc",
+	1 : "Fem",
+	2 : "Neut"
+}
 
-	gender = {
-		0 : "m",
-		1 : "f",
-		2 : "nt"
-	}
-else:
-	ptoseis = {
-		"ονομαστική": "Nom",
-		"γενική": "Gen",
-		"αιτιατική": "Acc",
-		"κλητική": "Voc"
-	}
-
-	arithmoi = {
-		"ενικός" : "Sing",
-		"πληθυντικός" : "Plur",
-		0 : 'Sing',
-		1 : 'Plur'
-	}
-
-	gender = {
-		0 : "Masc",
-		1 : "Fem",
-		2 : "Neut"
-	}
 """
 pos_transl = {
 	"adj" : "ADJ", #Επίθετα
@@ -192,7 +171,7 @@ pos_transl = {
 def print_forms(s,lemma,pos,genos,ptwsi,arithmos,degree,greek_pos,tag):
 	if s.strip() == '':
 		return
-	if 'PolyTerm' in tag:
+	if ' ' in lemma or 'PolyTerm' in tag:
 		tmp = [s]
 	else:
 		tmp = get_forms(s)
