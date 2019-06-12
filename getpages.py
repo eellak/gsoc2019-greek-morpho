@@ -34,6 +34,7 @@ acr = mw.categorymembers(category='Συντομομορφές (νέα ελλην
 protheseis = mw.categorymembers(category='Προθέσεις (νέα ελληνικά)',results=num_download,subcategories=False)
 moria = mw.categorymembers(category='Μόρια (νέα ελληνικά)',results=num_download,subcategories=False)
 num = mw.categorymembers(category='Αριθμητικά (νέα ελληνικά)',results=num_download,subcategories=False) # τακτικά, απόλυτα
+epifonimata = mw.categorymembers(category='Επιφωνήματα (νέα ελληνικά)',results=num_download,subcategories=False)
 
 print(len(nouns),' nouns')
 print(len(proper_nouns),' proper nouns')
@@ -199,6 +200,11 @@ for word in moria:
 	if is_complete(word,['PART']):
 		continue
 	wword(word,word,'PART')
+
+for word in epifonimata:
+	if is_complete(word,['INTJ']):
+		continue
+	wword(word,word,'INTJ')
 
 # we assume noun as in UD_GREEK
 for word in acr:
