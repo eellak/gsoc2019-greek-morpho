@@ -1,5 +1,5 @@
 form parse import wword
-#TODO είμαι,έχω
+#TODO είμαι,έχω,ένας
 def add_irreg_words():
 	#Αρθρα
 	wword('ο','ο','DET',case='Nom',definite='Def',gender='Masc',number='Sing',prontype='Art')
