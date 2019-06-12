@@ -69,5 +69,6 @@ The produced database with the morphological dictionary is under [CC BY-SA 3.0](
 
  * [Greek Wiktionary](https://el.wiktionary.org/)
  * [hunspell documentation](https://www.systutorials.com/docs/linux/man/4-hunspell/)
- * [UD_GREEK-GDT](https://github.com/UniversalDependencies/UD_Greek-GDT/)
+ * [UD\_GREEK-GDT](https://github.com/UniversalDependencies/UD_Greek-GDT/)
+ * [Tagset Greek](http://nlp.ilsp.gr/nlp/tagset_examples/tagset_el/)
  * [Fast Tokenizer](https://github.com/algorithm314/fast-tokenizer)
