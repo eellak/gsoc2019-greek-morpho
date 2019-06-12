@@ -56,12 +56,12 @@ with open("schema.sql") as file:
 
 # TODO πχ αγαπημένος (υποστήριξη περισσότερων από ένα μέρος του λόγου)
 def parse_code(lemma,code):
-	res = re.search("=== Ετυμολογία ===\n[^\s]*\s*(?P<ETM>[^=\n]+?)\n",code,re.UNICODE)
+	res = re.search("====? Ετυμολογία ====?\n[^\s]*\s*(?P<ETM>[^=\n]+?)\n",code,re.UNICODE)
 	if res != None:
 		cur.execute("INSERT INTO etymology VALUES (?,?)" , (lemma,res.group("ETM")))
 	else:
 		print("ETYMOLOGY NOT FOUND")
-	res = re.search("=== (Ουσιαστικό|Ρήμα|Επίθετο|Μετοχή|Κύριο\sόνομα|Πολυλεκτικός\sόρος|Αριθμητικό) ===\n+[^\n]*\n+(?P<DEF>[^=]+?)(\n+==|\Z)",code,re.DOTALL|re.UNICODE)
+	res = re.search("====? (Ουσιαστικό|Ρήμα|Επίθετο|Μετοχή|Κύριο\sόνομα|Πολυλεκτικός\sόρος|Αριθμητικό) ====?\n+[^\n]*\n+(?P<DEF>[^=]+?)(\n+==|\Z)",code,re.DOTALL|re.UNICODE)
 	if res != None:
 		cur.execute("INSERT INTO def VALUES (?,?)" , (lemma,res.group("DEF")))
 	else:
