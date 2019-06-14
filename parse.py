@@ -56,17 +56,18 @@ with open("schema.sql") as file:
 
 # TODO πχ αγαπημένος (υποστήριξη περισσότερων από ένα μέρος του λόγου)
 def parse_code(lemma,code):
-	res = re.search("====? Ετυμολογία ====?\n[^\s]*\s*(?P<ETM>[^=\n]+?)\n",code,re.UNICODE)
-	if res != None:
-		cur.execute("INSERT INTO etymology VALUES (?,?)" , (lemma,res.group("ETM")))
+
+	res = re.search("====? Ετυμολογία ====?\n+[^=\s\n]+\s*(?P<ETM>[^\n]+?)\n",code,re.UNICODE)
+	if res != None and res.group('ETM') != '< → Η ετυμολογία λείπει.':
+		cur.execute("INSERT INTO etymology VALUES (?,?)" , (lemma,res.group('ETM')))
 	else:
-		print("ETYMOLOGY NOT FOUND")
+		print(" (ETYMOLOGY NOT FOUND)",end='')
+
 	res = re.search("====? (Ουσιαστικό|Ρήμα|Επίθετο|Μετοχή|Κύριο\sόνομα|Πολυλεκτικός\sόρος|Αριθμητικό) ====?\n+[^\n]*\n+(?P<DEF>[^=]+?)(\n+==|\Z)",code,re.DOTALL|re.UNICODE)
-	if res != None:
-		cur.execute("INSERT INTO def VALUES (?,?)" , (lemma,res.group("DEF")))
+	if res != None and res.group('DEF') not in ['\n','→ Λείπει ο ορισμός (ή οι ορισμοί) αυτής της λέξης.']:
+		cur.execute("INSERT INTO def VALUES (?,?)" , (lemma,res.group('DEF')))
 	else:
-		print("DEFINITION NOT FOUND")
-		print(code)
+		print(" (DEFINITION NOT FOUND)",end='')
 
 def get_forms(s):
 	if 'a' in s:# if <a href ...> </a>

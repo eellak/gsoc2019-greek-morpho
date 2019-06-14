@@ -23,7 +23,7 @@ else:
 	#Tests
 	adj = ['ομορφότερος','μέγιστος','ανώμαλος','πράσινος','ταχύς','αβάζος','διπύρηνος','μακρύς']
 	nouns = ['τελωνείο','σύμμαχος','ανώμαλος','διάκεντρος','Ααρών','σκληρός δίσκος','Αρμαγεδδώνας','ρουλεμάν','Κολοκοτρώνης','γιατρός','σεληνοτοπογράφος','Ανδρέας','Μαρία','Αθήνα','Λάρισα','Ελλάδα','δέκα','άνθρακας','εδεσματολόγιο']
-	verbs = ['αγιάζω','αγριοκοιτάω','αγριοκοιτιέμαι','παραποιώ','φρενάρω','λύνω','αγαπιέμαι','αγαπώ','είμαι','διασπώ']
+	verbs = ['ενιδρύω','αγιάζω','αγριοκοιτάω','αγριοκοιτιέμαι','παραποιώ','φρενάρω','λύνω','αγαπιέμαι','αγαπώ','είμαι','διασπώ']
 	participles = ['αγαπημένος','αγαπώντας','φρενάροντας','ζητούμενος']
 	proper_nouns = []
 	num_download = 20
@@ -60,8 +60,10 @@ for title in verbs:
 	#μπορεί να είναι παθητικό και να έχουμε βάλει ήδη το ενεργητικό λήμμα
 	if form_exists(title,'VERB'):
 		continue
+
+	print('parsing %s:' % title,end='')
 	page = get_page(title)
-	print('parsing ' + title,end='')
+
 	html = page.html
 	code = page.content
 	parse_verb(html,code,title)
@@ -71,11 +73,10 @@ for title in verbs:
 for title in participles:
 	if is_complete(title,['VERB']):
 		continue
-	print('title %s:' % title)
+	print('parsing %s:' % title,end='')
 	padj = AdjParser()
 	padj.part = "VERB"
 	page = get_page(title)
-	print('parsing ' + title,end='')
 	html = page.html
 	lemma = title
 	if form_exists(title,'VERB'):#Αν το έχουμε βάλει
@@ -104,8 +105,8 @@ for title in adj:
 	if is_complete(title,['ADJ']):
 		continue
 	padj = AdjParser()
+	print('parsing %s:' % title,end='')
 	page = get_page(title)
-	print('parsing %s' % title,end='')
 	html = page.html
 	sygritikos = "title=\"συγκριτικός\"\>συγκριτικός\</a\> βαθμός του \<i\>\<a href=\"/wiki/.*?\" title=\".*?\"\>(?P<lemma>[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ]+)\</a\>"
 	syg = re.search(sygritikos,html,re.UNICODE)
@@ -142,8 +143,8 @@ for title in nouns:
 		continue
 	if is_complete(title,'PROPN'):#also top ant??
 		continue
+	print('parsing %s:' % title,end='')
 	page = get_page(title)
-	print('parsing ' + page.title,end='')
 	html = page.html
 	categories = page.categories
 	part = 'NOUN'
@@ -218,7 +219,7 @@ for title in num:
 	if is_complete(title,['NUM']):
 		continue
 	padj = AdjParser()
-	print('parsing %s'% title)
+	print('parsing %s:' % title,end='')
 	page = get_page(title)
 	html = page.html
 	padj.lemma = title
@@ -226,6 +227,7 @@ for title in num:
 	padj.feed(html)
 	if padj.detected == False:
 		wword(title,title,'NUM')
+	print()
 	conn.commit()
 
 conn.commit()
