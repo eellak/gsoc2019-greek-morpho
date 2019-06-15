@@ -117,10 +117,7 @@ def wword(form,lemma,pos,*args, **kwargs):
 
 def is_complete(lemma,pos):
 	# We dont need escape for pos
-	s = "SELECT form FROM words WHERE form = ? AND tags <> 'Incomplete' AND (true"
-	for i in pos:
-		s += " OR pos = \'%s\' " % i
-	cur.execute(s+')',(lemma,))
+	cur.execute( "SELECT form FROM words WHERE form = ? AND tags <> 'Incomplete' AND pos = ?",(lemma,pos))
 	l = cur.fetchall()
 	if len(l) != 0:
 		return True
