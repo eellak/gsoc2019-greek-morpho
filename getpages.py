@@ -55,7 +55,7 @@ def get_page(title):
 
 
 for title in verbs:
-	if is_complete(title,['VERB']):
+	if is_complete(title,'VERB'):
 		continue
 	#μπορεί να είναι παθητικό και να έχουμε βάλει ήδη το ενεργητικό λήμμα
 	if form_exists(title,'VERB'):
@@ -71,7 +71,7 @@ for title in verbs:
 	print()
 
 for title in participles:
-	if is_complete(title,['VERB']):
+	if is_complete(title,'VERB'):
 		continue
 	print('parsing %s:' % title,end='')
 	padj = AdjParser()
@@ -102,7 +102,7 @@ for title in participles:
 	print()
 
 for title in adj:
-	if is_complete(title,['ADJ']):
+	if is_complete(title,'ADJ'):
 		continue
 	padj = AdjParser()
 	print('parsing %s:' % title,end='')
@@ -139,9 +139,7 @@ def id_add(string,tag):
 	return string
 
 for title in nouns:
-	if is_complete(title,['NOUN','PROPN']):
-		continue
-	if is_complete(title,'PROPN'):#also top ant??
+	if is_complete(title,'NOUN') or is_complete(title,'PROPN'):
 		continue
 	print('parsing %s:' % title,end='')
 	page = get_page(title)
@@ -183,40 +181,40 @@ for title in nouns:
 	print()
 
 for word in prs:
-	if is_complete(word,['PRON']):
+	if is_complete(word,'PRON'):
 		continue
 	wword(word,word,'PRON')
 
 for word in advs:
-	if is_complete(word,['ADV']):
+	if is_complete(word,'ADV'):
 		continue
 	wword(word,word,'ADV')
 
 for word in protheseis:
-	if is_complete(word,['ADP']):
+	if is_complete(word,'ADP'):
 		continue
 	wword(word,word,'ADP')
 
 for word in moria:
-	if is_complete(word,['PART']):
+	if is_complete(word,'PART'):
 		continue
 	wword(word,word,'PART')
 
 for word in epifonimata:
-	if is_complete(word,['INTJ']):
+	if is_complete(word,'INTJ'):
 		continue
 	wword(word,word,'INTJ')
 
 # we assume noun as in UD_GREEK
 for word in acr:
-	if is_complete(word,['NOUN']):
+	if is_complete(word,'NOUN'):
 		continue
 	wword(word,word,'NOUN',tags='Abbr')
 
 # Αριθμητικά
 # TODO τακτικά κτλ
 for title in num:
-	if is_complete(title,['NUM']):
+	if is_complete(title,'NUM'):
 		continue
 	padj = AdjParser()
 	print('parsing %s:' % title,end='')
