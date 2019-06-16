@@ -70,7 +70,7 @@ def parse_code(lemma,code):
 		print(" (DEFINITION NOT FOUND)",end='')
 
 def get_forms(s):
-	if 'a' in s:# if <a href ...> </a>
+	if '<a' in s:# if <a href ...> </a>
 		s = re.search(r"\>([ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ()]+)\<\/a\>", s).group(0)
 	all_forms = re.findall(r"[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ()]+", s)
 	res = []
@@ -115,9 +115,8 @@ def wword(form,lemma,pos,*args, **kwargs):
 
 	cur.execute("INSERT INTO words VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(form,lemma,pos,greek_pos,gender,ptosi,number,person,tense,aspect,mood,verbform,voice,definite,degree,prontype,poss,tags,freq))
 
-def is_complete(lemma,pos):
-	# We dont need escape for pos
-	cur.execute( "SELECT form FROM words WHERE form = ? AND tags <> 'Incomplete' AND pos = ?",(lemma,pos))
+def is_complete(form,pos):
+	cur.execute( "SELECT form FROM words WHERE (form = ? AND (tags NOT LIKE '%Incomplete%' OR tags IS NULL) AND pos = ?)",(form,pos))
 	l = cur.fetchall()
 	if len(l) != 0:
 		return True
@@ -203,6 +202,7 @@ class AdjParser(HTMLParser):
 			if first == "class" and second == "mw-parser-output":#Start of parsing
 				self.grc = False
 				self.detected = False
+
 		if self.grc == True:
 			return
 		if self.td and tag == "br":
@@ -213,10 +213,6 @@ class AdjParser(HTMLParser):
 				self.td = True
 			if tag == "th":
 				self.th = True
-		
-		for first,second in attrs:
-			if first == "id" and second == "Αρχαία_ελληνικά_(grc)":
-				self.grc = True
 
 		if tag == "table":#detect table
 			for first,second in attrs:
@@ -224,6 +220,8 @@ class AdjParser(HTMLParser):
 					print(' parsable table detected',end='')
 					self.detected = True
 					self.i = True
+		if tag == 'td' and ('colspan','4') in attrs: # Αυτό είναι για τις παρατηρήσεις που πρέπει να αγνωούνται
+			self.td = False
 
 	def handle_endtag(self, tag):
 
@@ -301,10 +299,6 @@ class NounParser(HTMLParser):
 						self.td = False
 			if tag == "th":
 				self.th = True
-		
-		for first,second in attrs:
-			if first == "id" and second == "Αρχαία_ελληνικά_(grc)":
-				self.grc = True
 
 		if tag == "table":#detect table
 			for first,second in attrs:

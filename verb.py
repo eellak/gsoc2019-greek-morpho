@@ -375,6 +375,7 @@ def parse_verb(html,code,lemma):
 	v = 'Act'
 	a = re.search(mono_exakolouthitikoi,html,re.DOTALL|re.UNICODE)
 	if detected == 0 and a != None:
+		detected = 1
 		add_verb(a.group('ENEST_A_ENIKO'),'ENEST_A_ENIKO',lemma,1,'Sing','Pres','Ind','Imp','Fin',v)
 		add_verb(a.group('ENEST_B_ENIKO'),'ENEST_B_ENIKO',lemma,2,'Sing','Pres','Ind','Imp','Fin',v)
 		add_verb(a.group('ENEST_G_ENIKO'),'ENEST_G_ENIKO',lemma,3,'Sing','Pres','Ind','Imp','Fin',v)

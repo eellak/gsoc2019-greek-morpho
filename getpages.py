@@ -23,8 +23,8 @@ else:
 	#Tests
 	adj = ['ομορφότερος','μέγιστος','ανώμαλος','πράσινος','ταχύς','αβάζος','διπύρηνος','μακρύς']
 	nouns = ['τελωνείο','σύμμαχος','ανώμαλος','διάκεντρος','Ααρών','σκληρός δίσκος','Αρμαγεδδώνας','ρουλεμάν','Κολοκοτρώνης','γιατρός','σεληνοτοπογράφος','Ανδρέας','Μαρία','Αθήνα','Λάρισα','Ελλάδα','δέκα','άνθρακας','εδεσματολόγιο']
-	verbs = ['ενιδρύω','αγιάζω','αγριοκοιτάω','αγριοκοιτιέμαι','παραποιώ','φρενάρω','λύνω','αγαπιέμαι','αγαπώ','είμαι','διασπώ']
-	participles = ['αγαπημένος','αγαπώντας','φρενάροντας','ζητούμενος']
+	verbs = ['ζητώ','ενιδρύω','αγιάζω','αγριοκοιτάω','αγριοκοιτιέμαι','παραποιώ','φρενάρω','λύνω','αγαπιέμαι','αγαπώ','είμαι','διασπώ']
+	participles = ['αναδυόμενος','διευκολύνοντας','δεινοπαθώντας','αγαπημένος','αγαπώντας','φρενάροντας','ζητούμενος']
 	proper_nouns = []
 	num_download = 20
 
@@ -55,8 +55,6 @@ def get_page(title):
 
 
 for title in verbs:
-	if is_complete(title,'VERB'):
-		continue
 	#μπορεί να είναι παθητικό και να έχουμε βάλει ήδη το ενεργητικό λήμμα
 	if form_exists(title,'VERB'):
 		continue
@@ -73,36 +71,55 @@ for title in verbs:
 for title in participles:
 	if is_complete(title,'VERB'):
 		continue
+
+	# για τις περίεργες μετοχές -εις -ων
+	cur.execute("SELECT lemma FROM words WHERE form = ? AND greek_pos = 'METOXI'",(title,))
+	r = cur.fetchall()
+	if len(r) != 0:
+		continue
+	
 	print('parsing %s:' % title,end='')
 	padj = AdjParser()
-	padj.part = "VERB"
+	padj.part = 'VERB'
 	page = get_page(title)
 	html = page.html
 	lemma = title
-	if form_exists(title,'VERB'):#Αν το έχουμε βάλει
-		cur.execute("DELETE FROM words WHERE lemma = ?;" , (title,))
-		cur.execute('SELECT lemma FROM words WHERE form = ? AND pos = \'VERB\'',(title,))
+	if form_exists(title,'VERB'):# υπάρχει αλλά είναι Incomplete
+		cur.execute("SELECT lemma FROM words WHERE form = ? AND pos = 'VERB'",(title,))
 		r = cur.fetchall()
-		lemma = r[0][0]
-        #ΤΟΔΟ βάλε ως λήμμα το ρήμα
-	res = re.search('μετοχή παθητικού (ενεστώτα|παρακειμένου) του ρήματος \<a href=\"[^\"]+?\" title=\"(?P<LEMMA>[^\"]+?)\"\>.+?\<\/a>',html,re.UNICODE|re.DOTALL)
+		if len(r) != 0:
+			lemma = r[0][0]
+			cur.execute("DELETE FROM words WHERE form = ?;" , (title,))
+			conn.commit()
 
-	if  res != None:
+	res = re.search('(καθώς|μετοχή (ενεργητικού|παθητικού) (ενεστώτα|παρακειμένου) του ρήματος)( |&#160;)\<a href=\"[^\"]+?\" title=\"(?P<LEMMA>[^\"]+?)\"\>.+?\<\/a>',html,re.UNICODE|re.DOTALL)
+
+	if res != None:
 		lemma = res.group('LEMMA')
+
+		cur.execute("SELECT lemma FROM words WHERE form = ? AND pos = 'VERB'",(lemma,))
+		r = cur.fetchall()
+		if len(r) != 0:
+			lemma = r[0][0]
 	res = re.search('μετοχή\<\/a\> \<a href=\"\/wiki\/\%CE\%B5\%CE\%BD\%CE\%B5\%CF\%83\%CF\%84\%CF\%8E\%CF\%84\%CE\%B1\%CF\%82\" title=\"ενεστώτας\"\>ενεστώτα\<\/a\> του \<i\>\<a href=\"[^\"]+?\" title=\"(?P<LEMMA>[^\"]+?)\">[^\"]+?\<\/a\>',html,re.UNICODE|re.DOTALL)
 	if res != None:
 		lemma = res.group('LEMMA')
+
+	print(' lemma = %s '%lemma,end='')
 	padj.lemma = lemma
 	padj.greek_pos = 'METOXI_PP'
 	padj.feed(html)
-	#if padj.detected == False:
-	#	print('[[' + title + ']]',file=NotDetectedAdj)
-	#	wword(title,title,'VERB',tags='Incomplete') # TODO
+
+	if padj.detected == False:
+		if 'ντας' in title:
+			wword(title,lemma,'VERB',greek_pos='METOXI_EE',aspect='Imp',verbform='Conv',voice='Act')
+		else:
+			wword(title,lemma,'VERB',greek_pos='METOXI',tags='Incomplete')
 	conn.commit()
 	print()
 
 for title in adj:
-	if is_complete(title,'ADJ'):
+	if form_exists(title,'ADJ'):
 		continue
 	padj = AdjParser()
 	print('parsing %s:' % title,end='')
@@ -139,7 +156,7 @@ def id_add(string,tag):
 	return string
 
 for title in nouns:
-	if is_complete(title,'NOUN') or is_complete(title,'PROPN'):
+	if form_exists(title,'NOUN') or form_exists(title,'PROPN'):
 		continue
 	print('parsing %s:' % title,end='')
 	page = get_page(title)
@@ -181,40 +198,40 @@ for title in nouns:
 	print()
 
 for word in prs:
-	if is_complete(word,'PRON'):
+	if form_exists(word,'PRON'):
 		continue
 	wword(word,word,'PRON')
 
 for word in advs:
-	if is_complete(word,'ADV'):
+	if form_exists(word,'ADV'):
 		continue
 	wword(word,word,'ADV')
 
 for word in protheseis:
-	if is_complete(word,'ADP'):
+	if form_exists(word,'ADP'):
 		continue
 	wword(word,word,'ADP')
 
 for word in moria:
-	if is_complete(word,'PART'):
+	if form_exists(word,'PART'):
 		continue
 	wword(word,word,'PART')
 
 for word in epifonimata:
-	if is_complete(word,'INTJ'):
+	if form_exists(word,'INTJ'):
 		continue
 	wword(word,word,'INTJ')
 
 # we assume noun as in UD_GREEK
 for word in acr:
-	if is_complete(word,'NOUN'):
+	if form_exists(word,'NOUN'):
 		continue
 	wword(word,word,'NOUN',tags='Abbr')
 
 # Αριθμητικά
 # TODO τακτικά κτλ
 for title in num:
-	if is_complete(title,'NUM'):
+	if form_exists(title,'NUM'):
 		continue
 	padj = AdjParser()
 	print('parsing %s:' % title,end='')
