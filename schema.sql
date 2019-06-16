@@ -39,3 +39,5 @@ CREATE TABLE IF NOT EXISTS etymology(
 	lemma TEXT,
 	rel TEXT
 );
+
+CREATE INDEX IF NOT EXISTS form_indes ON words(form);
