@@ -70,12 +70,13 @@ def parse_code(lemma,code):
 		print(" (DEFINITION NOT FOUND)",end='')
 
 def get_forms(s):
+	#print(s)
 	if '<a' in s:# if <a href ...> </a>
 		s = re.search(r"\>([ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ()]+)\<\/a\>", s).group(0)
 	all_forms = re.findall(r"[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ()]+", s)
 	res = []
 	for i in all_forms:
-		# print("form=",i)
+		#print("form=",i)
 		if '(' in i:
 			tmp = ''
 			j = 0
@@ -84,8 +85,9 @@ def get_forms(s):
 				j+=1
 			if tmp != '':
 				res += [tmp]
-			if j > len(i):
-				break
+			
+			if ')' not in i:
+				continue
 			j+=1
 			while i[j] != ')':
 				tmp += i[j]
@@ -173,6 +175,8 @@ def print_forms(s,lemma,pos,genos,ptwsi,arithmos,degree,greek_pos,tag):
 	else:
 		tmp = get_forms(s)
 	for i in tmp:
+		if i in ['και','ή','(',')','&']:
+			continue
 		if pos == 'VERB':
 			 # Εδώ είναι οι μετοχές -μένος
 			wword(i.strip(),lemma,pos,gender=genos,ptosi=ptwsi,number=arithmos,degree=degree,greek_pos=greek_pos,aspect='Perf',verbform='Part',voice='Pass',tags=tag)
@@ -220,7 +224,7 @@ class AdjParser(HTMLParser):
 					print(' parsable table detected',end='')
 					self.detected = True
 					self.i = True
-		if tag == 'td' and ('colspan','4') in attrs: # Αυτό είναι για τις παρατηρήσεις που πρέπει να αγνωούνται
+		if self.i == True and tag == 'td' and ('colspan','4') in attrs: # Αυτό είναι για τις παρατηρήσεις που πρέπει να αγνωούνται
 			self.td = False
 
 	def handle_endtag(self, tag):
@@ -235,7 +239,7 @@ class AdjParser(HTMLParser):
 		if self.td == True and tag == "td":#element print end
 			self.td = False
 			self.prop_print()
-			self.genos+=1
+			self.genos += 1
 		if tag == "th":
 			self.genos = 0
 			self.th = False
@@ -247,10 +251,12 @@ class AdjParser(HTMLParser):
 			if self.th == True and data in ["ενικός","πληθυντικός"]:
 				self.arithmos = arithmoi[data]
 			if self.td == True and data != "" and data != "\n":
-				if data in ["ονομαστική","γενική","αιτιατική","κλητική"]:
+				if data in ['ονομαστική','γενική','αιτιατική','κλητική']:
 					self.ptosi = ptoseis[data]
 					self.td = False
 				else:
+					if data in ['και', 'ή']:
+						data = ' '
 					self.word += data
 					self.pr = True
 
@@ -324,11 +330,13 @@ class NounParser(HTMLParser):
 			if self.th == True and data in ["ενικός","πληθυντικός"]:
 				self.arithmos = arithmoi[data]
 				self.total_numbers += 1
-			if self.td == True and data != "" and data != "\n":
+			if self.td == True and data not in ['' ,'\n']:
 				if data in ["ονομαστική","γενική","αιτιατική","κλητική"]:
 					self.ptosi = ptoseis[data]
 					self.td = False
 				else:
+					if data in ['και', 'ή']:
+						data = ' '
 					self.word += data
 					self.pr = True
 
