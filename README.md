@@ -1,5 +1,11 @@
 # GSOC 2019 - Development of a Greek open source Morphological dictionary and application of it to Greek spelling tools
 
+## Dictionary Download
+
+The version v0.1 of the dictionary can be found [here](http://snf-869216.vm.okeanos.grnet.gr/dict.zip)
+
+It contains almost 500000 distinct surface forms and about 900000 form with morphological information. 
+
 ## Running
 
 ### Dependencies
