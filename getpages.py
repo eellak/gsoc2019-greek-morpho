@@ -161,8 +161,7 @@ for title in nouns:
 	print('parsing %s:' % title,end='')
 	page = get_page(title)
 	html = page.html
-	if title == 'βόλος':
-		print(html)
+
 	categories = page.categories
 	part = 'NOUN'
 	tag = ''

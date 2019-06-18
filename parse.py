@@ -224,7 +224,7 @@ class AdjParser(HTMLParser):
 					print(' parsable table detected',end='')
 					self.detected = True
 					self.i = True
-		if self.i == True and tag == 'td' and ('colspan','4') in attrs: # Αυτό είναι για τις παρατηρήσεις που πρέπει να αγνωούνται
+		if tag == 'td' and ('colspan','4') in attrs: # Αυτό είναι για τις παρατηρήσεις που πρέπει να αγνωούνται
 			self.td = False
 
 	def handle_endtag(self, tag):
@@ -255,8 +255,6 @@ class AdjParser(HTMLParser):
 					self.ptosi = ptoseis[data]
 					self.td = False
 				else:
-					if data in ['και', 'ή']:
-						data = ' '
 					self.word += data
 					self.pr = True
 
@@ -335,8 +333,6 @@ class NounParser(HTMLParser):
 					self.ptosi = ptoseis[data]
 					self.td = False
 				else:
-					if data in ['και', 'ή']:
-						data = ' '
 					self.word += data
 					self.pr = True
 
