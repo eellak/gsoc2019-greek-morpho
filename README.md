@@ -4,9 +4,30 @@
 
 The version v0.1 of the dictionary can be found [here](http://snf-869216.vm.okeanos.grnet.gr/dict.zip)
 
-It contains almost 500000 distinct surface forms and about 900000 form with morphological information. 
+It contains almost 500000 distinct surface forms and about 900000 forms with morphological information. 
 
-## Running
+### How to open
+
+After installing sqlite3(,zip)
+
+```
+debian/ubuntu
+apt install sqlite3 zip
+```
+
+Then run
+
+```
+unzip dict.zip
+sqlite3 dict.db
+```
+
+You can now use SQL
+```sql
+SELECT form,lemma FROM words WHERE form != lemma LIMIT 100;`
+```
+
+## Running the script
 
 ### Dependencies
 
