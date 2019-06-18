@@ -24,7 +24,7 @@ sqlite3 dict.db
 
 You can now use SQL
 ```sql
-SELECT form,lemma FROM words WHERE form != lemma LIMIT 100;`
+SELECT form,lemma FROM words WHERE form != lemma LIMIT 100;
 ```
 
 ## Running the script
