@@ -392,6 +392,6 @@ def parse_noun(html,lemma,part,tag):
 		parsable_tables = re.findall("float:right;border:1px solid #AAAACC;margin-left:0.5em;margin-bottom:0.5em;text-align:right;",html,re.DOTALL|re.UNICODE)
 		if len(parsable_tables) != 0:
 			print("[["+lemma+"]]",file=TableNotGender)
-	if pn.detected == False and not aklito:
+	if pn.detected == False and not aklito and genos != 'ERROR':
 		print('[[' + lemma + ']]',file=NotDetectedNoun);
-		wword(lemma,lemma,part,tags='Incomplete')
+		wword(lemma,lemma,part,gender=gender[genos],tags='Incomplete')
