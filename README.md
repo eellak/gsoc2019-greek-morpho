@@ -27,6 +27,14 @@ You can now use SQL
 SELECT form,lemma FROM words WHERE form != lemma LIMIT 100;
 ```
 
+An alternative is to use the gui [sqlitebrowser](https://sqlitebrowser.org/).
+
+For debian/ubuntu
+
+```
+apt install sqlitebrowser
+```
+
 ## Running the script
 
 ### Dependencies
@@ -69,7 +77,7 @@ will be added to the spelling tool dictionaries.
 
 Creation of a parsing tool for Greek wiktionary that parses nouns, adjectives, verbs using Universal Dependencies POS tags
 
-### Phase 2 Phase 2 (Jun 29 - Jul 26)
+### Phase 2 (Jun 29 - Jul 26)
 
 Addition of remaining parts of speech to the Morphological dictionary and
  addition of further information tags like toponyms and terminology extracted from page categories.
