@@ -8,7 +8,7 @@ It contains almost 500000 distinct surface forms and about 900000 forms with mor
 
 ### How to open
 
-After installing sqlite3(,zip)
+After installing SQLite3(,zip)
 
 ```
 debian/ubuntu
@@ -27,7 +27,7 @@ You can now use SQL
 SELECT form,lemma FROM words WHERE form != lemma LIMIT 100;
 ```
 
-An alternative is to use the gui [sqlitebrowser](https://sqlitebrowser.org/).
+An alternative is to use the GUI [sqlitebrowser](https://sqlitebrowser.org/).
 
 For debian/ubuntu
 
