@@ -386,7 +386,7 @@ def parse_noun(html,lemma,part,tag):
 	if aklito and genos != 'ERROR':
 		for ptosi in ["Nom","Gen","Acc","Voc"]:
 			for arith in ["Sing","Plur"]:
-				wword(lemma,lemma,part,gender=gender[genos],ptosi=ptosi,number=arith)
+				wword(lemma,lemma,part,gender=gender[genos],ptosi=ptosi,number=arith,tags=tag)
 
 	if detected == False:
 		parsable_tables = re.findall("float:right;border:1px solid #AAAACC;margin-left:0.5em;margin-bottom:0.5em;text-align:right;",html,re.DOTALL|re.UNICODE)
@@ -394,4 +394,5 @@ def parse_noun(html,lemma,part,tag):
 			print("[["+lemma+"]]",file=TableNotGender)
 	if pn.detected == False and not aklito and genos != 'ERROR':
 		print('[[' + lemma + ']]',file=NotDetectedNoun);
-		wword(lemma,lemma,part,gender=gender[genos],tags='Incomplete')
+		tag += ' Incomplete';
+		wword(lemma,lemma,part,gender=gender[genos],tags=tag.strip())
