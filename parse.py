@@ -1,8 +1,6 @@
-from html.parser import HTMLParser
-from html.entities import name2codepoint
-import sys
 import re
 import sqlite3
+from html.parser import HTMLParser
 
 conn = sqlite3.connect('dict.db')
 cur = conn.cursor()
@@ -55,24 +53,24 @@ with open("schema.sql") as file:
 	conn.commit()
 
 # TODO πχ αγαπημένος (υποστήριξη περισσότερων από ένα μέρος του λόγου)
-def parse_code(lemma,code):
+def parse_code(lemma, code):
 
-	res = re.search("====? Ετυμολογία ====?\n+[^=\s\n]+\s*(?P<ETM>.+?)\n(?=\n\=\=)",code,re.DOTALL|re.UNICODE)
-	if res != None and res.group('ETM') != '< → Η ετυμολογία λείπει.':
-		cur.execute("INSERT INTO etymology VALUES (?,?)" , (lemma,res.group('ETM').strip()))
+	res = re.search(r"====? Ετυμολογία ====?\n+[^=\s\n]+\s*(?P<ETM>.+?)\n(?=\n==)", code, re.DOTALL|re.UNICODE)
+	if res is not None and res.group('ETM') != '< → Η ετυμολογία λείπει.':
+		cur.execute("INSERT INTO etymology VALUES (?,?)" , (lemma, res.group('ETM').strip()))
 	else:
 		print(" (ETYMOLOGY NOT FOUND)",end='')
 
-	res = re.search("====? (Ουσιαστικό|Ρήμα|Επίθετο|Μετοχή|Κύριο\sόνομα|Πολυλεκτικός\sόρος|Αριθμητικό) ====?\n+[^\n]*\n+(?P<DEF>.+?)(?=\n\=\=)",code,re.DOTALL|re.UNICODE)
-	if res != None and res.group('DEF') not in ['\n','→ Λείπει ο ορισμός (ή οι ορισμοί) αυτής της λέξης.']:
-		cur.execute("INSERT INTO def VALUES (?,?)" , (lemma,res.group('DEF').strip()))
+	res = re.search(r"====? (Ουσιαστικό|Ρήμα|Επίθετο|Μετοχή|Κύριο\sόνομα|Πολυλεκτικός\sόρος|Αριθμητικό) ====?\n+[^\n]*\n+(?P<DEF>.+?)(?=\n==)",code,re.DOTALL|re.UNICODE)
+	if res is not None and res.group('DEF') not in ['\n', '→ Λείπει ο ορισμός (ή οι ορισμοί) αυτής της λέξης.']:
+		cur.execute("INSERT INTO def VALUES (?,?)" , (lemma, res.group('DEF').strip()))
 	else:
-		print(" (DEFINITION NOT FOUND)",end='')
+		print(" (DEFINITION NOT FOUND)", end='')
 
 def get_forms(s):
 	#print(s)
 	if '<a' in s:# if <a href ...> </a>
-		s = re.search(r"\>([ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ()]+)\<\/a\>", s).group(0)
+		s = re.search(r">([ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ()]+)</a>", s).group(0)
 	all_forms = re.findall(r"[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ()]+", s)
 	res = []
 	for i in all_forms:
@@ -97,35 +95,35 @@ def get_forms(s):
 			res += [i]
 	return res
 
-def wword(form,lemma,pos,*args, **kwargs):
-	gender = kwargs.get('gender',None)
-	ptosi = kwargs.get('ptosi',None)
-	number = kwargs.get('number',None)
-	person = kwargs.get('person',None)
-	aspect = kwargs.get('aspect',None)
-	tense = kwargs.get('tense',None)
-	mood = kwargs.get('mood',None)
-	verbform = kwargs.get('verbform',None)
-	voice = kwargs.get('voice',None)
-	definite = kwargs.get('definite',None)
-	prontype = kwargs.get('prontype',None)
-	tags = kwargs.get('tags',None)
-	degree = kwargs.get('degree',None)
-	poss = kwargs.get('poss',None)
-	greek_pos = kwargs.get('greek_pos',None)
-	freq = kwargs.get('freq',None)
+def wword(form, lemma, pos, *args, **kwargs):
+	gender = kwargs.get('gender', None)
+	ptosi = kwargs.get('ptosi', None)
+	number = kwargs.get('number', None)
+	person = kwargs.get('person', None)
+	aspect = kwargs.get('aspect', None)
+	tense = kwargs.get('tense', None)
+	mood = kwargs.get('mood', None)
+	verbform = kwargs.get('verbform', None)
+	voice = kwargs.get('voice', None)
+	definite = kwargs.get('definite', None)
+	prontype = kwargs.get('prontype', None)
+	tags = kwargs.get('tags', None)
+	degree = kwargs.get('degree', None)
+	poss = kwargs.get('poss', None)
+	greek_pos = kwargs.get('greek_pos', None)
+	freq = kwargs.get('freq', None)
 
-	cur.execute("INSERT INTO words VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(form,lemma,pos,greek_pos,gender,ptosi,number,person,tense,aspect,mood,verbform,voice,definite,degree,prontype,poss,tags,freq))
+	cur.execute("INSERT INTO words VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(form, lemma, pos, greek_pos, gender, ptosi, number, person, tense, aspect, mood, verbform, voice, definite, degree, prontype, poss, tags, freq))
 
-def is_complete(form,pos):
-	cur.execute( "SELECT form FROM words WHERE (form = ? AND (tags NOT LIKE '%Incomplete%' OR tags IS NULL) AND pos = ?)",(form,pos))
+def is_complete(form, pos):
+	cur.execute( "SELECT form FROM words WHERE (form = ? AND (tags NOT LIKE '%Incomplete%' OR tags IS NULL) AND pos = ?)", (form, pos))
 	l = cur.fetchall()
 	if len(l) != 0:
 		return True
 	return False
 
-def form_exists(form,pos):
-	cur.execute("SELECT form FROM words WHERE (form = ? AND pos = ?)" , (form,pos))
+def form_exists(form, pos):
+	cur.execute("SELECT form FROM words WHERE (form = ? AND pos = ?)" , (form, pos))
 	l = cur.fetchall()
 	if len(l) != 0:
 		return True
@@ -167,7 +165,7 @@ pos_transl = {
 	"κατι και εδω":"PART"#Μόρια
 }"""
 
-def print_forms(s,lemma,pos,genos,ptwsi,arithmos,degree,greek_pos,tag):
+def print_forms(s, lemma, pos, genos, ptwsi, arithmos, degree, greek_pos, tag):
 	if s.strip() == '':
 		return
 	if ' ' in lemma or 'PolyTerm' in tag:
@@ -175,13 +173,13 @@ def print_forms(s,lemma,pos,genos,ptwsi,arithmos,degree,greek_pos,tag):
 	else:
 		tmp = get_forms(s)
 	for i in tmp:
-		if i in ['και','ή','(',')','&']:
+		if i in ['και', 'ή', '(', ')', '&']:
 			continue
 		if pos == 'VERB':
 			 # Εδώ είναι οι μετοχές -μένος
-			wword(i.strip(),lemma,pos,gender=genos,ptosi=ptwsi,number=arithmos,degree=degree,greek_pos=greek_pos,aspect='Perf',verbform='Part',voice='Pass',tags=tag)
+			wword(i.strip(), lemma, pos, gender=genos, ptosi=ptwsi, number=arithmos, degree=degree, greek_pos=greek_pos, aspect='Perf', verbform='Part', voice='Pass', tags=tag)
 		else:
-			wword(i.strip(),lemma,pos,gender=genos,ptosi=ptwsi,number=arithmos,degree=degree,greek_pos=greek_pos,tags=tag)
+			wword(i.strip(), lemma, pos, gender=genos, ptosi=ptwsi, number=arithmos, degree=degree, greek_pos=greek_pos, tags=tag)
 	
 # Μερικά επίθετα έχουν μόνο ένα γένος πχ αβάζος
 class AdjParser(HTMLParser):
@@ -207,12 +205,12 @@ class AdjParser(HTMLParser):
 				self.grc = False
 				self.detected = False
 
-		if self.grc == True:
+		if self.grc:
 			return
 		if self.td and tag == "br":
 			self.prop_print()
 			return
-		if self.i == True:
+		if self.i:
 			if tag == "td":
 				self.td = True
 			if tag == "th":
@@ -221,7 +219,7 @@ class AdjParser(HTMLParser):
 		if tag == "table":#detect table
 			for first,second in attrs:
 				if first == "style" and second == "float:right;border:1px solid #AAAACC;margin-left:0.5em;margin-bottom:0.5em;text-align:center;":
-					print(' parsable table detected',end='')
+					print(' parsable table detected', end='')
 					self.detected = True
 					self.i = True
 		if tag == 'td' and ('colspan','4') in attrs: # Αυτό είναι για τις παρατηρήσεις που πρέπει να αγνωούνται
@@ -236,7 +234,7 @@ class AdjParser(HTMLParser):
 			self.prop_print()
 			return
 
-		if self.td == True and tag == "td":#element print end
+		if self.td and tag == "td":#element print end
 			self.td = False
 			self.prop_print()
 			self.genos += 1
@@ -247,11 +245,11 @@ class AdjParser(HTMLParser):
 
 	def handle_data(self, data):
 		data = data.strip()
-		if self.i == True:
-			if self.th == True and data in ["ενικός","πληθυντικός"]:
+		if self.i:
+			if self.th and data in ['ενικός', 'πληθυντικός']:
 				self.arithmos = arithmoi[data]
-			if self.td == True and data != "" and data != "\n":
-				if data in ['ονομαστική','γενική','αιτιατική','κλητική']:
+			if self.td and data != '' and data != '\n':
+				if data in ['ονομαστική', 'γενική', 'αιτιατική', 'κλητική']:
 					self.ptosi = ptoseis[data]
 					self.td = False
 				else:
@@ -260,7 +258,7 @@ class AdjParser(HTMLParser):
 
 	def prop_print(self):
 		g = gender[self.genos%3]
-		print_forms(self.word,self.lemma,self.part,g,self.ptosi,self.arithmos,self.degree,self.greek_pos,self.tag)
+		print_forms(self.word, self.lemma, self.part, g,self.ptosi, self.arithmos, self.degree, self.greek_pos, self.tag)
 		self.word = ''
 
 
@@ -268,8 +266,8 @@ class NounParser(HTMLParser):
 	i = False
 	td = False
 	th = False
-	ptosi = "ERROR"
-	arithmos = "ERROR"
+	ptosi = 'ERROR'
+	arithmos = 'ERROR'
 	degree = None
 	greek_pos = None
 	genos = 0
@@ -284,30 +282,30 @@ class NounParser(HTMLParser):
 
 	def handle_starttag(self, tag, attrs):
 		for first,second in attrs:
-			if first == "id" and second == "Αρχαία_ελληνικά_(grc)":
+			if first == 'id' and second == 'Αρχαία_ελληνικά_(grc)':
 				self.grc = True
-			if first == "class" and second == "mw-parser-output":
+			if first == 'class' and second == 'mw-parser-output':
 				self.grc = False
 				self.total_numbers = 0
 				self.cur_arithmos = 0
 				self.detected = False
-		if self.grc == True:
+		if self.grc:
 			return
 
-		if self.i == True:
-			if tag == "td":
+		if self.i:
+			if tag == 'id':
 				self.td = True
 				#βγάλε την παρατήρηση στο τέλος πχ Ανδρέας
 				for first,second in attrs:
-					if first == "style" and second == "background:#d9ebff; font-size: 90%; font-style: italic;":
+					if first == 'style' and second == 'background:#d9ebff; font-size: 90%; font-style: italic;':
 						self.td = False
-			if tag == "th":
+			if tag == 'th':
 				self.th = True
 
 		if tag == "table":#detect table
 			for first,second in attrs:
 				if first == "style" and second == "float:right;border:1px solid #AAAACC;margin-left:0.5em;margin-bottom:0.5em;text-align:right;":
-					print(' parsable table detected',end='')
+					print(' parsable table detected', end='')
 					self.detected = True
 					self.i = True
 
@@ -315,7 +313,7 @@ class NounParser(HTMLParser):
 		if tag == "table":
 			self.i = False
 
-		if self.td == True and tag == "td":#element print end
+		if self.td and tag == "td":#element print end
 			self.td = False
 			self.prop_print()
 			self.cur_arithmos += 1
@@ -324,12 +322,12 @@ class NounParser(HTMLParser):
 
 	def handle_data(self, data):
 		data = data.strip()
-		if self.i == True:
-			if self.th == True and data in ["ενικός","πληθυντικός"]:
+		if self.i:
+			if self.th and data in ['ενικός', 'πληθυντικός']:
 				self.arithmos = arithmoi[data]
 				self.total_numbers += 1
-			if self.td == True and data not in ['' ,'\n']:
-				if data in ["ονομαστική","γενική","αιτιατική","κλητική"]:
+			if self.td and data not in ['', '\n']:
+				if data in ['ονομαστική', 'γενική', 'αιτιατική', 'κλητική']:
 					self.ptosi = ptoseis[data]
 					self.td = False
 				else:
@@ -342,19 +340,19 @@ class NounParser(HTMLParser):
 			ar = self.arithmos
 		else:
 			ar = arithmoi[self.cur_arithmos%2]
-		print_forms(self.word,self.lemma,self.part,g,self.ptosi,ar,self.degree,self.greek_pos,self.tag)
+		print_forms(self.word, self.lemma, self.part, g, self.ptosi, ar, self.degree, self.greek_pos, self.tag)
 		self.word = ''
 
-NotDetectedNoun = open("NotDetectedNoun.dic","a")
-TableNotGender = open("TableNotGender.dic","a")
+NotDetectedNoun = open("NotDetectedNoun.dic", "a")
+TableNotGender = open("TableNotGender.dic", "a")
 
 #TODO θυλικό μονο στον ενικό
-def parse_noun(html,lemma,part,tag):
+def parse_noun(html, lemma, part, tag):
 	pn = NounParser()
 	pn.lemma = lemma
 	pn.part = part
 	pn.tag = tag
-	result = re.finditer("\<font color=\"#002000\"\>\<i\>(?P<GENOS>.*?)\</i\>\<\/font\>",html,re.DOTALL|re.UNICODE)
+	result = re.finditer(r"<font color=\"#002000\"><i>(?P<GENOS>.*?)</i></font>", html, re.DOTALL | re.UNICODE)
 	genos = 'ERROR'
 	detected = False
 	h_found = False
@@ -364,14 +362,14 @@ def parse_noun(html,lemma,part,tag):
 		m = m.strip()
 		if genos == m:#detect only one time
 			continue
-		print(' ' + m,end='')
-		if m in ['ουδέτερο','ουδέτερο μόνο στον ενικό','ουδέτερο μόνο στον πληθυντικό'] and detected == False:
+		print(' ' + m, end='')
+		if m in ['ουδέτερο', 'ουδέτερο μόνο στον ενικό', 'ουδέτερο μόνο στον πληθυντικό'] and not detected:
 			detected = True
 			genos = pn.genos = 2
-		elif m in[ 'θηλυκό','θηλυκό μόνο στον ενικό','θηλυκό μόνο στον πληθυντικό'] and (detected == False or h_found == True):
+		elif m in[ 'θηλυκό', 'θηλυκό μόνο στον ενικό', 'θηλυκό μόνο στον πληθυντικό'] and (not detected or h_found):
 			genos = pn.genos = 1
 			detected = True
-		elif m in ['αρσενικό','αρσενικό μόνο στον πληθυντικό','αρσενικό μόνο στον ενικό']and detected == False:
+		elif m in ['αρσενικό', 'αρσενικό μόνο στον πληθυντικό', 'αρσενικό μόνο στον ενικό']and not detected:
 			detected = True
 			genos = pn.genos = 0
 		elif m == 'άκλιτο':
@@ -384,15 +382,15 @@ def parse_noun(html,lemma,part,tag):
 		pn.feed(html)
 
 	if aklito and genos != 'ERROR':
-		for ptosi in ["Nom","Gen","Acc","Voc"]:
-			for arith in ["Sing","Plur"]:
-				wword(lemma,lemma,part,gender=gender[genos],ptosi=ptosi,number=arith,tags=tag)
+		for ptosi in ['Nom','Gen','Acc','Voc']:
+			for arith in ['Sing','Plur']:
+				wword(lemma, lemma, part, gender=gender[genos], ptosi=ptosi, number=arith, tags=tag)
 
-	if detected == False:
-		parsable_tables = re.findall("float:right;border:1px solid #AAAACC;margin-left:0.5em;margin-bottom:0.5em;text-align:right;",html,re.DOTALL|re.UNICODE)
+	if not detected:
+		parsable_tables = re.findall("float:right;border:1px solid #AAAACC;margin-left:0.5em;margin-bottom:0.5em;text-align:right;", html, re.DOTALL | re.UNICODE)
 		if len(parsable_tables) != 0:
-			print("[["+lemma+"]]",file=TableNotGender)
-	if pn.detected == False and not aklito and genos != 'ERROR':
-		print('[[' + lemma + ']]',file=NotDetectedNoun);
-		tag += ' Incomplete';
-		wword(lemma,lemma,part,gender=gender[genos],tags=tag.strip())
+			print("[["+lemma+"]]", file=TableNotGender)
+	if not pn.detected and not aklito and genos != 'ERROR':
+		print('[[' + lemma + ']]', file=NotDetectedNoun)
+		tag += ' Incomplete'
+		wword(lemma, lemma, part, gender=gender[genos], tags=tag.strip())
