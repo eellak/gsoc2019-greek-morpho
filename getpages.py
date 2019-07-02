@@ -35,6 +35,7 @@ protheseis = mw.categorymembers(category='Προθέσεις (νέα ελλην�
 moria = mw.categorymembers(category='Μόρια (νέα ελληνικά)', results=num_download, subcategories=False)
 num = mw.categorymembers(category='Αριθμητικά (νέα ελληνικά)', results=num_download, subcategories=False) # τακτικά, απόλυτα
 epifonimata = mw.categorymembers(category='Επιφωνήματα (νέα ελληνικά)', results=num_download, subcategories=False)
+rimatikoi_typoi = mw.categorymembers(category='Ρηματικοί τύποι (νέα ελληνικά)', results=num_download, subcategories=False)
 
 print(len(nouns), ' nouns')
 print(len(proper_nouns), ' proper nouns')
@@ -46,6 +47,12 @@ print(len(acr), ' acronyms')
 print(len(num), ' num')
 
 nouns = nouns + proper_nouns
+
+# many passive verbs are in ρηματικοί τύποι
+verbs_from_rimatikous_typous = [a for a in rimatikoi_typoi if a.endswith("ομαι") or a.endswith('ούμαι') or a.endswith("ιέμαι")]
+print(len(verbs_from_rimatikous_typous), ' passive verbs in Ρηματικοί τύποι')
+
+verbs += verbs_from_rimatikous_typous
 
 def get_page(title):
 	p = mw.page(title, auto_suggest=False)
