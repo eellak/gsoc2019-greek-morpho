@@ -177,9 +177,32 @@ def print_forms(s, lemma, pos, genos, ptwsi, arithmos, degree, greek_pos, tag):
 			continue
 		if pos == 'VERB':
 			 # Εδώ είναι οι μετοχές -μένος
-			wword(i.strip(), lemma, pos, gender=genos, ptosi=ptwsi, number=arithmos, degree=degree, greek_pos=greek_pos, aspect='Perf', verbform='Part', voice='Pass', tags=tag)
+			wword(
+				i.strip(),
+				lemma,
+				pos,
+				gender=genos,
+				ptosi=ptwsi,
+				number=arithmos,
+				degree=degree,
+				greek_pos=greek_pos,
+				aspect='Perf',
+				verbform='Part',
+				voice='Pass',
+				tags=tag
+			)
 		else:
-			wword(i.strip(), lemma, pos, gender=genos, ptosi=ptwsi, number=arithmos, degree=degree, greek_pos=greek_pos, tags=tag)
+			wword(
+				i.strip(),
+				lemma,
+				pos,
+				gender=genos,
+				ptosi=ptwsi,
+				number=arithmos,
+				degree=degree,
+				greek_pos=greek_pos,
+				tags=tag
+			)
 	
 # Μερικά επίθετα έχουν μόνο ένα γένος πχ αβάζος
 class AdjParser(HTMLParser):

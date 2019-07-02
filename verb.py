@@ -290,6 +290,7 @@ mono_exakolouthitikoi = r"""<tr>
 # print(re.sub(r'\\\n','\n',re.escape(t))) # this produces the above
 # make it cleaner
 # sed -r 's/\\([ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ <>/=:#])/\1/g'
+
 def s(s):
 	if s is None:
 		return ''
@@ -300,7 +301,17 @@ def add_verb(form, greek_pos, lemma, person, number, tense, mood, aspect, verbfo
 	all_forms = get_forms(form)
 	for i in all_forms:
 		#print(i +' '+ lemma + ' ' + str(s(person)) + ' '+s(number)+' '+s(tense)+' '+s(mood)+' '+s(aspect)+' '+s(verbform)+' '+s(voice))
-		wword(i, lemma, 'VERB', person=person, tags=tags, number=number, tense=tense, mood=mood, aspect=aspect, verbform=verbform, voice=voice, greek_pos=greek_pos)
+		wword(i, lemma, 'VERB',
+			person=person,
+			tags=tags,
+			number=number,
+			tense=tense,
+			mood=mood,
+			aspect=aspect,
+			verbform=verbform,
+			voice=voice,
+			greek_pos=greek_pos
+		)
 
 
 def parse_verb(html, code, lemma):
