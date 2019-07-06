@@ -40,4 +40,9 @@ CREATE TABLE IF NOT EXISTS etymology(
 	rel TEXT
 );
 
+CREATE TABLE IF NOT EXISTS norm(
+	lemma TEXT,
+	norm TEXT
+);
+
 CREATE INDEX IF NOT EXISTS form_indes ON words(form);
