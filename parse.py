@@ -59,9 +59,10 @@ def parse_code(lemma, code):
 	if res is not None and res.group('ETM') != '< → Η ετυμολογία λείπει.':
 		cur.execute("INSERT INTO etymology VALUES (?,?)" , (lemma, res.group('ETM').strip()))
 	else:
-		print(" (ETYMOLOGY NOT FOUND)",end='')
+		print(" (ETYMOLOGY NOT FOUND)", end='')
 
-	res = re.search(r"====? (Ουσιαστικό|Ρήμα|Επίθετο|Μετοχή|Κύριο\sόνομα|Πολυλεκτικός\sόρος|Αριθμητικό) ====?\n+[^\n]*\n+(?P<DEF>.+?)(?=\n==)",code,re.DOTALL|re.UNICODE)
+	res = re.search(r"====? (Ουσιαστικό|Ρήμα|Επίθετο|Μετοχή|Κύριο\sόνομα|Πολυλεκτικός\sόρος|Αριθμητικό) ====?\n+[^\n]*\n+(?P<DEF>.+?)(?=\n==)", code, re.DOTALL|re.UNICODE)
+
 	if res is not None and res.group('DEF') not in ['\n', '→ Λείπει ο ορισμός (ή οι ορισμοί) αυτής της λέξης.']:
 		cur.execute("INSERT INTO def VALUES (?,?)" , (lemma, res.group('DEF').strip()))
 	else:
@@ -80,13 +81,13 @@ def get_forms(s):
 			j = 0
 			while i[j] != '(':
 				tmp += i[j]
-				j+=1
+				j += 1
 			if tmp != '':
 				res += [tmp]
-			
+
 			if ')' not in i:
 				continue
-			j+=1
+			j += 1
 			while i[j] != ')':
 				tmp += i[j]
 				j += 1
@@ -203,7 +204,7 @@ def print_forms(s, lemma, pos, genos, ptwsi, arithmos, degree, greek_pos, tag):
 				greek_pos=greek_pos,
 				tags=tag
 			)
-	
+
 # Μερικά επίθετα έχουν μόνο ένα γένος πχ αβάζος
 class AdjParser(HTMLParser):
 	i = False

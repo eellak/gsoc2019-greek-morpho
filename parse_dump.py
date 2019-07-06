@@ -1,14 +1,17 @@
 from xml.etree import ElementTree as ET
 import sys
 import re
+import sqlite3
 
-if len(sys.argv) != 2:
-	sys.exit('ERROR: please give xml dump')
+if len(sys.argv) != 3:
+	sys.exit('ERROR: Usage\n%s Wiktionary_Dump SQLite3_Database' % sys.argv[0])
 
 tree = ET.parse(sys.argv[1])
 root = tree.getroot()
 ns = 'http://www.mediawiki.org/xml/export-0.10/'
 
+conn = sqlite3.connect(sys.argv[2])
+cur = conn.cursor()
 
 def parse_translations(code, title):
 	for a in re.finditer(r"{{μτφ-αρχή\|?(?P<CASE>[^}]*?)}}(?P<MTF>.*?)({{μτφ-τέλος}}|{{κλείδα-ελλ}})", code, re.DOTALL|re.UNICODE):
@@ -17,13 +20,20 @@ def parse_translations(code, title):
 			if b.group('TRANSLATION') in ['ΧΧΧ', 'XXX']:# both greek and english characters
 				continue
 
-			print("%s:%s:%s:%s" % (title, b.group('LANG'), b.group('TRANSLATION'), a.group('CASE')))
+			# print("%s:%s:%s:%s" % (title, b.group('LANG'), b.group('TRANSLATION'), a.group('CASE')))
 
 
 def parse_normalisation(code, title):
-	for a in re.finditer(r"{{γραφή του ?\|(?P<NORM>[^}|]+)", code, re.DOTALL|re.UNICODE):
-		print("NORM %s:%s" % (title, a.group('NORM')))
+	for a in re.finditer(r"{{γραφή του ?\|(?P<NORM>[^}|]+)", code, re.UNICODE):
+		# print("NORM %s:%s" % (title, a.group('NORM')))
+		cur.execute("INSERT INTO norm VALUES(?,?)", (title, a.group('NORM')))
 
+def parse_synonyms(code, title):
+	for a in re.finditer(r"{{συνων(\|[^}]+)?}}(?P<SYN>.+)", code, re.UNICODE):
+		for b in re.finditer(r"(^\s*|,\s*)\[\[(?P<SYN>[^\]|]+)(\|[^\]\[]+)?\]\](?=(\s*$|\s*,))", a.group('SYN'), re.UNICODE):
+			print(a.group('SYN'), b.group('SYN'))
+			if b.group('SYN') is not None:
+				cur.execute("INSERT INTO synonyms VALUES(?,?)", (title, b.group('SYN')))
 
 for page in root.findall('{%s}page' % ns):
 	title = page.find('{%s}title' % ns).text
@@ -34,3 +44,6 @@ for page in root.findall('{%s}page' % ns):
 	if code is not None and namespace == '0':
 		parse_translations(code, title)
 		parse_normalisation(code, title)
+		parse_synonyms(code, title)
+
+conn.commit()
