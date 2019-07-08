@@ -317,7 +317,7 @@ class NounParser(HTMLParser):
 			return
 
 		if self.i:
-			if tag == 'id':
+			if tag == 'td':
 				self.td = True
 				#βγάλε την παρατήρηση στο τέλος πχ Ανδρέας
 				for first,second in attrs:
@@ -341,6 +341,7 @@ class NounParser(HTMLParser):
 			self.td = False
 			self.prop_print()
 			self.cur_arithmos += 1
+
 		if tag == "th":
 			self.th = False
 
