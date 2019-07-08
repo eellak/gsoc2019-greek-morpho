@@ -30,6 +30,11 @@ CREATE TABLE IF NOT EXISTS synonyms(
 	syn TEXT
 );
 
+CREATE TABLE IF NOT EXISTS antonyms(
+	lemma TEXT,
+	anton TEXT
+);
+
 CREATE TABLE IF NOT EXISTS related(
 	lemma TEXT,
 	rel TEXT
@@ -37,7 +42,7 @@ CREATE TABLE IF NOT EXISTS related(
 
 CREATE TABLE IF NOT EXISTS etymology(
 	lemma TEXT,
-	rel TEXT
+	etym TEXT
 );
 
 CREATE TABLE IF NOT EXISTS norm(

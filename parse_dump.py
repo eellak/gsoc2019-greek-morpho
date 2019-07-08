@@ -37,10 +37,27 @@ def parse_synonyms(code, title):
 
 	syn_list = re.search(r"==={{συνώνυμα}}====*(?P<SYN_LIST>[^=]+)(?=\=\=)", code, re.UNICODE | re.DOTALL)
 	if syn_list is not None:
-		print("list is",syn_list.group('SYN_LIST'))
+		# print("list is",syn_list.group('SYN_LIST'))
 		for a in re.finditer(r"\*\s*\[\[(?P<SYN>[^\]\[|]+)(\|[^\]]+)?\]\]\s*$", syn_list.group('SYN_LIST'), re.UNICODE):
 			cur.execute("INSERT INTO synonyms VALUES(?,?)", (title, a.group('SYN')))
 
+
+def parse_antonyms(code, title):
+	for a in re.finditer(r"{{αντων(\|[^}]+)?}}(?P<ANTON>.+)", code, re.UNICODE):
+		for b in re.finditer(r"(^\s*|,\s*)\[\[(?P<ANTON>[^\]|]+)(\|[^\]\[]+)?\]\](?=(\s*$|\s*,))", a.group('ANTON'), re.UNICODE):
+			# print(a.group('SYN'), b.group('SYN'))
+			cur.execute("INSERT INTO antonyms VALUES(?,?)", (title, b.group('ANTON')))
+
+	antonym_list = re.search(r"==={{αντώνυμα}}====*(?P<ANTON_LIST>[^=]+)(?=\=\=)", code, re.UNICODE | re.DOTALL)
+	if antonym_list is not None:
+		for a in re.finditer(r"\*\s*\[\[(?P<ANTON>[^\]\[|]+)(\|[^\]]+)?\]\]\s*$", antonym_list.group('ANTON_LIST'), re.UNICODE):
+			cur.execute("INSERT INTO antonyms VALUES(?,?)", (title, a.group('ANTON')))
+
+def parse_related(code, title):
+	related_list = re.search(r"==={{συγγενικά}}====*(?P<REL_LIST>[^=]+)(?=\=\=)", code, re.UNICODE | re.DOTALL)
+	if related_list is not None:
+		for a in re.finditer(r"\*\s*\[\[(?P<REL>[^\]\[|]+)(\|[^\]]+)?\]\]\s*$", related_list.group('REL_LIST'), re.UNICODE):
+			cur.execute("INSERT INTO related VALUES(?,?)", (title, a.group('REL')))
 
 for page in root.findall('{%s}page' % ns):
 	title = page.find('{%s}title' % ns).text
@@ -52,5 +69,7 @@ for page in root.findall('{%s}page' % ns):
 		parse_translations(code, title)
 		parse_normalisation(code, title)
 		parse_synonyms(code, title)
+		parse_antonyms(code, title)
+		parse_related(code, title)
 
 conn.commit()
