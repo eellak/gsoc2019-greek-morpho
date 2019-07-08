@@ -24,16 +24,23 @@ def parse_translations(code, title):
 
 
 def parse_normalisation(code, title):
-	for a in re.finditer(r"{{γραφή του ?\|(?P<NORM>[^}|]+)", code, re.UNICODE):
+	a = re.search(r"{{γραφή του ?\|(?P<NORM>[^}|]+)", code, re.UNICODE)
+	if a is not None:
 		# print("NORM %s:%s" % (title, a.group('NORM')))
 		cur.execute("INSERT INTO norm VALUES(?,?)", (title, a.group('NORM')))
 
 def parse_synonyms(code, title):
 	for a in re.finditer(r"{{συνων(\|[^}]+)?}}(?P<SYN>.+)", code, re.UNICODE):
 		for b in re.finditer(r"(^\s*|,\s*)\[\[(?P<SYN>[^\]|]+)(\|[^\]\[]+)?\]\](?=(\s*$|\s*,))", a.group('SYN'), re.UNICODE):
-			print(a.group('SYN'), b.group('SYN'))
-			if b.group('SYN') is not None:
-				cur.execute("INSERT INTO synonyms VALUES(?,?)", (title, b.group('SYN')))
+			# print(a.group('SYN'), b.group('SYN'))
+			cur.execute("INSERT INTO synonyms VALUES(?,?)", (title, b.group('SYN')))
+
+	syn_list = re.search(r"==={{συνώνυμα}}====*(?P<SYN_LIST>[^=]+)(?=\=\=)", code, re.UNICODE | re.DOTALL)
+	if syn_list is not None:
+		print("list is",syn_list.group('SYN_LIST'))
+		for a in re.finditer(r"\*\s*\[\[(?P<SYN>[^\]\[|]+)(\|[^\]]+)?\]\]\s*$", syn_list.group('SYN_LIST'), re.UNICODE):
+			cur.execute("INSERT INTO synonyms VALUES(?,?)", (title, a.group('SYN')))
+
 
 for page in root.findall('{%s}page' % ns):
 	title = page.find('{%s}title' % ns).text
