@@ -14,30 +14,27 @@ conn = sqlite3.connect(sys.argv[2])
 cur = conn.cursor()
 
 def parse_translations(code, title):
-	for a in re.finditer(r"{{μτφ-αρχή\|?(?P<CASE>[^}]*?)}}(?P<MTF>.*?)({{μτφ-τέλος}}|{{κλείδα-ελλ}})", code, re.DOTALL|re.UNICODE):
-		# TODO υπάρχουν και άλλες επιλογές πχ iw= link=
+	for a in re.finditer(r"{{μτφ-αρχή\|?(?P<SENSE>[^}]*?)}}(?P<MTF>.*?)({{μτφ-τέλος}}|{{κλείδα-ελλ}})", code, re.DOTALL|re.UNICODE):
 		for b in re.finditer(r"{{τ\|(?P<LANG>[a-z]{2,3})\|(?P<TRANSLATION>[^|]+?)(\||}).*?}", a.group('MTF'), re.UNICODE):
 			if b.group('TRANSLATION') in ['ΧΧΧ', 'XXX']:# both greek and english characters
 				continue
-
+			cur.execute("INSERT INTO translations VALUES(?,?,?,?,?)",
+			('el', title, b.group('LANG'), b.group('TRANSLATION'), a.group('SENSE')))
 			# print("%s:%s:%s:%s" % (title, b.group('LANG'), b.group('TRANSLATION'), a.group('CASE')))
 
 
 def parse_normalisation(code, title):
 	a = re.search(r"{{γραφή του ?\|(?P<NORM>[^}|]+)", code, re.UNICODE)
 	if a is not None:
-		# print("NORM %s:%s" % (title, a.group('NORM')))
 		cur.execute("INSERT INTO norm VALUES(?,?)", (title, a.group('NORM')))
 
 def parse_synonyms(code, title):
 	for a in re.finditer(r"{{συνων(\|[^}]+)?}}(?P<SYN>.+)", code, re.UNICODE):
 		for b in re.finditer(r"(^\s*|,\s*)\[\[(?P<SYN>[^\]|]+)(\|[^\]\[]+)?\]\](?=(\s*$|\s*,))", a.group('SYN'), re.UNICODE):
-			# print(a.group('SYN'), b.group('SYN'))
 			cur.execute("INSERT INTO synonyms VALUES(?,?)", (title, b.group('SYN')))
 
 	syn_list = re.search(r"==={{συνώνυμα}}====*(?P<SYN_LIST>[^=]+)(?=\=\=)", code, re.UNICODE | re.DOTALL)
 	if syn_list is not None:
-		# print("list is",syn_list.group('SYN_LIST'))
 		for a in re.finditer(r"\*\s*\[\[(?P<SYN>[^\]\[|]+)(\|[^\]]+)?\]\]\s*$", syn_list.group('SYN_LIST'), re.UNICODE):
 			cur.execute("INSERT INTO synonyms VALUES(?,?)", (title, a.group('SYN')))
 
@@ -45,7 +42,6 @@ def parse_synonyms(code, title):
 def parse_antonyms(code, title):
 	for a in re.finditer(r"{{αντων(\|[^}]+)?}}(?P<ANTON>.+)", code, re.UNICODE):
 		for b in re.finditer(r"(^\s*|,\s*)\[\[(?P<ANTON>[^\]|]+)(\|[^\]\[]+)?\]\](?=(\s*$|\s*,))", a.group('ANTON'), re.UNICODE):
-			# print(a.group('SYN'), b.group('SYN'))
 			cur.execute("INSERT INTO antonyms VALUES(?,?)", (title, b.group('ANTON')))
 
 	antonym_list = re.search(r"==={{αντώνυμα}}====*(?P<ANTON_LIST>[^=]+)(?=\=\=)", code, re.UNICODE | re.DOTALL)

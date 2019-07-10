@@ -50,4 +50,12 @@ CREATE TABLE IF NOT EXISTS norm(
 	norm TEXT
 );
 
+CREATE TABLE IF NOT EXISTS translations(
+	src TEXT NOT NULL,
+	src_lemma TEXT NOT NULL,
+	dest TEXT NOT NULL,
+	dest_lemma TEXT NOT NULL,
+	sense TEXT
+);
+
 CREATE INDEX IF NOT EXISTS form_indes ON words(form);
