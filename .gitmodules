@@ -1,0 +1,3 @@
+[submodule "fast-tokenizer"]
+	path = fast-tokenizer
+	url = https://github.com/algorithm314/fast-tokenizer
