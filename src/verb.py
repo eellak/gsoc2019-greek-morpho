@@ -205,7 +205,7 @@ mono_exakolouthitikoi = r"""<tr>
 </th>
 <th>Προστακτική
 </th>
-<th align=\"center\">Μετοχή
+<th( align=\"center\")?>Μετοχή
 </th></tr>
 <tr>
 <td style=\"background:#c0c0c0\">α\' ενικ\.
@@ -284,8 +284,7 @@ mono_exakolouthitikoi = r"""<tr>
 <td>θα (.*?)
 </td>
 <td>να (.*?)
-</td>
-<td>"""
+</td>"""
 
 # print(re.sub(r'\\\n','\n',re.escape(t))) # this produces the above
 # make it cleaner
