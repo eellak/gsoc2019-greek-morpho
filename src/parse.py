@@ -61,7 +61,7 @@ def parse_code(lemma, code):
 	else:
 		print(" (ETYMOLOGY NOT FOUND)", end='')
 
-	res = re.search(r"====? (Ουσιαστικό|Ρήμα|Επίθετο|Μετοχή|Κύριο\sόνομα|Πολυλεκτικός\sόρος|Αριθμητικό) ====?\n+[^\n]*\n+(?P<DEF>.+?)(?=\n==)", code, re.DOTALL|re.UNICODE)
+	res = re.search(r"====? (Ουσιαστικό|Ρήμα|Επίθετο|Μετοχή|Κύριο\sόνομα|Πολυλεκτικός\sόρος|Αριθμητικό|Ρηματικός\sτύπος) ====?\n+[^\n]*\n+(?P<DEF>.+?)(?=\n==)", code, re.DOTALL|re.UNICODE)
 
 	if res is not None and res.group('DEF') not in ['\n', '→ Λείπει ο ορισμός (ή οι ορισμοί) αυτής της λέξης.']:
 		cur.execute("INSERT INTO def VALUES (?,?)" , (lemma, res.group('DEF').strip()))
