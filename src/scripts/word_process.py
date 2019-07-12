@@ -1,4 +1,5 @@
 import sys
+import re
 
 words = {}
 
@@ -15,7 +16,9 @@ se_tonismena = {
 	'ι' : 'ί',
 	'ο' : 'ό',
 	'ω' : 'ώ',
-	'υ' : 'ύ'
+	'υ' : 'ύ',
+	'ϋ' : 'ΰ',
+	'ϊ' : 'ΐ'
 }
 
 # first pass, put words into dictionary
@@ -28,7 +31,7 @@ while line != '':
 		words[line] = 1
 	line = in_file.readline()
 
-# second pass, remove probable wrong words
+# second pass, remove probably wrong words
 word_list = []
 
 for x,y in words.items():
@@ -37,7 +40,11 @@ for x,y in words.items():
 	
 	if y < min_count_found:
 		continue
-	# if there is the same word in lower case, skip it
+	
+	elif re.fullmatch("[αβγδεζηθικλμνξοπρστυφχψωςϋϊ]*[αεηιυοωϋϊ]+[βγδζθκλμνξπρστφχψς]+[αεηιυοωϋϊ]+[αβγδεζηθικλμνξοπρστυφχψωςϋϊ]*",x) is not None:
+		# print('#άτονο#',x)
+		continue
+	# if there is the same word in lower case, skip it	
 	elif x != x.lower():
 		if x.lower() in words: 
 			continue
@@ -53,6 +60,7 @@ for x,y in words.items():
 				if tmp in words:
 					should_be_put = False
 				
+				# first character can be upper
 				tmp = lowered[0].upper() + lowered[1:i] + se_tonismena[lowered[i]] + lowered[i+1:]
 				if tmp in words:
 					should_be_put = False
