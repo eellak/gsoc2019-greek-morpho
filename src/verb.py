@@ -286,6 +286,8 @@ mono_exakolouthitikoi = r"""<tr>
 <td>να (.*?)
 </td>"""
 
+passive = r'<a\ href="/wiki/%CF%80%CE%B1%CE%B8%CE%B7%CF%84%CE%B9%CE%BA%CE%AE_%CF%86%CF%89%CE%BD%CE%AE"\ title="παθητική\ φωνή">παθητική\ φωνή</a></i>\&\#160;<i>του\ ρήματος</i>\&\#160;<b><a\ href="/wiki/[^"]+"\ title="(?P<LEMMA>[^\"]+?)">[^<]+</a>'
+
 # print(re.sub(r'\\\n','\n',re.escape(t))) # this produces the above
 # make it cleaner
 # sed -r 's/\\([ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ <>/=:#])/\1/g'
@@ -318,10 +320,16 @@ def parse_verb(html, code, lemma):
 	#μετοχές {{μτχππ| και {{μτχπε|
 	# TODO μετοχές ούμενος
 	v = 'Act'
-	res = re.search(r"<div class=\"NavHead\" align=\"left\">&#160; &#160; Ενεργητική φωνή</div>",html,re.DOTALL|re.UNICODE)
+	res = re.search(r"<div class=\"NavHead\" align=\"left\">&#160; &#160; Ενεργητική φωνή</div>",html,re.UNICODE)
 	if res is None:
 		v = 'Pass'
 	detected = 0
+
+	res = re.search(passive,html,re.UNICODE)
+	if res is not None:
+		v = 'Pass'
+		lemma = res.group('LEMMA')
+
 	for a in re.finditer(energ,html,re.DOTALL | re.UNICODE):
 		detected = 1
 		if v == 'Pass' and form_exists(a.group('ENEST_A_ENIKO'), 'VERB'):#Αν έχουμε βάλει το παθητικό λήμμα
