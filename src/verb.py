@@ -316,9 +316,6 @@ def add_verb(form, greek_pos, lemma, person, number, tense, mood, aspect, verbfo
 
 
 def parse_verb(html, code, lemma):
-	#TODO εντοπισμός {{παθ|}}
-	#μετοχές {{μτχππ| και {{μτχπε|
-	# TODO μετοχές ούμενος
 	v = 'Act'
 	res = re.search(r"<div class=\"NavHead\" align=\"left\">&#160; &#160; Ενεργητική φωνή</div>",html,re.UNICODE)
 	if res is None:
@@ -332,7 +329,7 @@ def parse_verb(html, code, lemma):
 
 	for a in re.finditer(energ,html,re.DOTALL | re.UNICODE):
 		detected = 1
-		if v == 'Pass' and form_exists(a.group('ENEST_A_ENIKO'), 'VERB'):#Αν έχουμε βάλει το παθητικό λήμμα
+		if v == 'Pass' and form_exists(a.group('ENEST_A_ENIKO'), 'VERB'): # Αν έχουμε βάλει το παθητικό λήμμα
 			cur.execute("DELETE FROM words WHERE lemma = ?",(a.group('ENEST_A_ENIKO'),))
 
 		if v == 'Pass':
