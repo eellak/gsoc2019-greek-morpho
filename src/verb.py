@@ -314,13 +314,16 @@ def add_verb(form, greek_pos, lemma, person, number, tense, mood, aspect, verbfo
 			greek_pos=greek_pos
 		)
 
-
 def parse_verb(html, code, lemma):
+
+	detected = 0
+
+	form = lemma
+
 	v = 'Act'
 	res = re.search(r"<div class=\"NavHead\" align=\"left\">&#160; &#160; Ενεργητική φωνή</div>",html,re.UNICODE)
 	if res is None:
 		v = 'Pass'
-	detected = 0
 
 	res = re.search(passive,html,re.UNICODE)
 	if res is not None:
@@ -339,6 +342,7 @@ def parse_verb(html, code, lemma):
 				wword(met.group('METOXI2'), lemma, 'VERB', greek_pos='METOXI_PP', gender='Masc', ptosi='Nom', number='Sing', aspect='Perf', verbform='Part', voice='Pass', tags='Incomplete')
 			else:
 				print(' Δεν βρέθηκε μετοχή', end='')
+
 		add_verb(a.group('ENEST_A_ENIKO'),'ENEST_A_ENIKO',lemma,1,'Sing','Pres','Ind','Imp','Fin',v)
 		add_verb(a.group('ENEST_B_ENIKO'),'ENEST_B_ENIKO',lemma,2,'Sing','Pres','Ind','Imp','Fin',v)
 		add_verb(a.group('ENEST_G_ENIKO'),'ENEST_G_ENIKO',lemma,3,'Sing','Pres','Ind','Imp','Fin',v)
@@ -363,7 +367,7 @@ def parse_verb(html, code, lemma):
 		if v == 'Act':
 			add_verb(a.group('METOXI'),'METOXI_EE',lemma,None,None,None,None,'Imp','Conv',v)
 		else:
-			if a.group('METOXI') not in [None,""]:
+			if a.group('METOXI') not in [None,'']:
 				form = re.search('>(?P<MET>.*?)</a>',a.group('METOXI'),re.UNICODE)
 				#print('a.group = ',a.group('METOXI'))
 				if form is not None:
@@ -387,7 +391,6 @@ def parse_verb(html, code, lemma):
 		add_verb(a.group('AOR_YPOT_G_PL'),'AOR_YPOT_G_PL',lemma,3,'Plur',None,'Ind','Perf','Fin',v)
 		v = 'Pass'
 
-	v = 'Act'
 	a = re.search(mono_exakolouthitikoi,html,re.DOTALL|re.UNICODE)
 	if detected == 0 and a is not None:
 		detected = 1
@@ -407,11 +410,9 @@ def parse_verb(html, code, lemma):
 
 		add_verb(a.group('PROST_ENEST_B_ENIKO'),'PROST_ENEST_B_ENIKO',lemma,2,'Sing',None,'Imp','Ind','Fin',v) # Λογικά Ind
 		add_verb(a.group('PROST_ENEST_B_PL'),'PROST_ENEST_B_PL',lemma,2,'Sing',None,'Imp','Ind','Fin',v)
-		detected = 1;
 
 	#ΤODO VerbForm=Conv για τις μετοχές οντας, VerbForm=Inf για τα απαρρέμφατα,VerbForm=Part με Voice=Pass για τις μετομές που προκείπτουν από ρήμα
 	#για τις άλλες μετοχές ADJ,VerbForm=Fin για τα άλλα
 
 	if detected == 0:
-		wword(lemma, lemma, 'VERB', tags="Incomplete")
-
+		add_verb(form, 'ENEST_A_ENIKO', lemma,1,'Sing','Pres','Ind','Imp','Fin',v, tags="Incomplete")
