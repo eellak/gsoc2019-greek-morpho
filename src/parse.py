@@ -147,7 +147,7 @@ gender = {
 	0 : 'Masc',
 	1 : 'Fem',
 	2 : 'Neut',
-	-1 : ''
+	'ERROR' : ''
 }
 
 """
@@ -413,7 +413,7 @@ def parse_noun(html, lemma, part, tag):
 				wword(lemma, lemma, part, gender=gender[genos], ptosi=ptosi, number=arith, tags=tag)
 
 	if not detected:
-		pn.genos = -1
+		pn.genos = genos
 		pn.feed(html)
 		parsable_tables = re.findall("float:right;border:1px solid #AAAACC;margin-left:0.5em;margin-bottom:0.5em;text-align:right;", html, re.DOTALL | re.UNICODE)
 		if len(parsable_tables) != 0:
