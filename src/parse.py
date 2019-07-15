@@ -131,22 +131,23 @@ def form_exists(form, pos):
 	return False
 
 ptoseis = {
-	"ονομαστική": "Nom",
-	"γενική": "Gen",
-	"αιτιατική": "Acc",
-	"κλητική": "Voc"
+	'ονομαστική': 'Nom',
+	'γενική': 'Gen',
+	'αιτιατική': 'Acc',
+	'κλητική': 'Voc'
 }
 arithmoi = {
-	"ενικός" : "Sing",
-	"πληθυντικός" : "Plur",
+	'ενικός' : 'Sing',
+	'πληθυντικός' : 'Plur',
 	0 : 'Sing',
 	1 : 'Plur'
 }
 
 gender = {
-	0 : "Masc",
-	1 : "Fem",
-	2 : "Neut"
+	0 : 'Masc',
+	1 : 'Fem',
+	2 : 'Neut',
+	-1 : ''
 }
 
 """
@@ -394,7 +395,7 @@ def parse_noun(html, lemma, part, tag):
 		elif m in[ 'θηλυκό', 'θηλυκό μόνο στον ενικό', 'θηλυκό μόνο στον πληθυντικό'] and (not detected or h_found):
 			genos = pn.genos = 1
 			detected = True
-		elif m in ['αρσενικό', 'αρσενικό μόνο στον πληθυντικό', 'αρσενικό μόνο στον ενικό']and not detected:
+		elif m in ['αρσενικό', 'αρσενικό μόνο στον πληθυντικό', 'αρσενικό μόνο στον ενικό'] and not detected:
 			detected = True
 			genos = pn.genos = 0
 		elif m == 'άκλιτο':
@@ -412,6 +413,8 @@ def parse_noun(html, lemma, part, tag):
 				wword(lemma, lemma, part, gender=gender[genos], ptosi=ptosi, number=arith, tags=tag)
 
 	if not detected:
+		pn.genos = -1
+		pn.feed(html)
 		parsable_tables = re.findall("float:right;border:1px solid #AAAACC;margin-left:0.5em;margin-bottom:0.5em;text-align:right;", html, re.DOTALL | re.UNICODE)
 		if len(parsable_tables) != 0:
 			print("[["+lemma+"]]", file=TableNotGender)
