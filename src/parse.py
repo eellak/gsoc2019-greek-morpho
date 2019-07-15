@@ -71,8 +71,8 @@ def parse_code(lemma, code):
 def get_forms(s):
 	#print(s)
 	if '<a' in s:# if <a href ...> </a>
-		s = re.search(r">([ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ()]+)</a>", s).group(0)
-	all_forms = re.findall(r"[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ()]+", s)
+		s = re.search(r">([\u1F00-\u1FFFΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ()]+)</a>", s).group(0)
+	all_forms = re.findall(r"[\u1F00-\u1FFFΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ()]+", s)
 	res = []
 	for i in all_forms:
 		#print("form=",i)
@@ -418,7 +418,8 @@ def parse_noun(html, lemma, part, tag):
 		parsable_tables = re.findall("float:right;border:1px solid #AAAACC;margin-left:0.5em;margin-bottom:0.5em;text-align:right;", html, re.DOTALL | re.UNICODE)
 		if len(parsable_tables) != 0:
 			print("[["+lemma+"]]", file=TableNotGender)
-	if not pn.detected and not aklito and genos != 'ERROR':
+
+	if not pn.detected and not aklito:
 		print('[[' + lemma + ']]', file=NotDetectedNoun)
 		tag += ' Incomplete'
 		wword(lemma, lemma, part, gender=gender[genos], tags=tag.strip())
