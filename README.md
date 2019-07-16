@@ -2,38 +2,9 @@
 
 ## Dictionary Download
 
-The version v0.1 of the dictionary can be found [here](http://snf-869216.vm.okeanos.grnet.gr/dict.zip)
+The version v0.2 of the dictionary can be found [here](http://snf-869216.vm.okeanos.grnet.gr/dict-v0.2.zip)
 
-It contains almost 500000 distinct surface forms and about 900000 forms with morphological information. 
-
-### How to open
-
-After installing SQLite3(,zip)
-
-```
-debian/ubuntu
-apt install sqlite3 zip
-```
-
-Then run
-
-```
-unzip dict.zip
-sqlite3 dict.db
-```
-
-You can now use SQL
-```sql
-SELECT form,lemma FROM words WHERE form != lemma LIMIT 100;
-```
-
-An alternative is to use the GUI [sqlitebrowser](https://sqlitebrowser.org/).
-
-For debian/ubuntu
-
-```
-apt install sqlitebrowser
-```
+It contains about 518000 distinct surface forms and about 900000 forms with morphological information. 
 
 ## Running the script
 
