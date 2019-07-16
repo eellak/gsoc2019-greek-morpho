@@ -52,19 +52,28 @@ with open("schema.sql") as file:
 	cur.executescript(script)
 	conn.commit()
 
+def lemma_exists(lemma,table):
+	cur.execute("SELECT lemma FROM " + table + " WHERE lemma = ?",(lemma,))
+	l = cur.fetchall()
+	if len(l) != 0:
+		return True
+	return False
+
 # TODO πχ αγαπημένος (υποστήριξη περισσότερων από ένα μέρος του λόγου)
 def parse_code(lemma, code):
 
 	res = re.search(r"====? Ετυμολογία ====?\n+[^=\s\n]+\s*(?P<ETM>.+?)\n(?=\n==)", code, re.DOTALL|re.UNICODE)
 	if res is not None and res.group('ETM') != '< → Η ετυμολογία λείπει.':
-		cur.execute("INSERT INTO etymology VALUES (?,?)" , (lemma, res.group('ETM').strip()))
+		if not lemma_exists(lemma,'etymology'):
+			cur.execute("INSERT INTO etymology VALUES (?,?)" , (lemma, res.group('ETM').strip()))
 	else:
 		print(" (ETYMOLOGY NOT FOUND)", end='')
 
 	res = re.search(r"====? (Ουσιαστικό|Ρήμα|Επίθετο|Μετοχή|Κύριο\sόνομα|Πολυλεκτικός\sόρος|Αριθμητικό|Ρηματικός\sτύπος) ====?\n+[^\n]*\n+(?P<DEF>.+?)(?=\n==)", code, re.DOTALL|re.UNICODE)
 
 	if res is not None and res.group('DEF') not in ['\n', '→ Λείπει ο ορισμός (ή οι ορισμοί) αυτής της λέξης.']:
-		cur.execute("INSERT INTO def VALUES (?,?)" , (lemma, res.group('DEF').strip()))
+		if not lemma_exists(lemma,'def'):
+			cur.execute("INSERT INTO def VALUES (?,?)" , (lemma, res.group('DEF').strip()))
 	else:
 		print(" (DEFINITION NOT FOUND)", end='')
 
@@ -117,7 +126,7 @@ def wword(form, lemma, pos, *args, **kwargs):
 	cur.execute("INSERT INTO words VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(form, lemma, pos, greek_pos, gender, ptosi, number, person, tense, aspect, mood, verbform, voice, definite, degree, prontype, poss, tags, freq))
 
 def is_complete(form, pos):
-	cur.execute( "SELECT form FROM words WHERE (form = ? AND (tags NOT LIKE '%Incomplete%' OR tags IS NULL) AND pos = ?)", (form, pos))
+	cur.execute("SELECT form FROM words WHERE (form = ? AND (tags NOT LIKE '%Incomplete%' OR tags IS NULL) AND pos = ?)", (form, pos))
 	l = cur.fetchall()
 	if len(l) != 0:
 		return True
@@ -149,23 +158,6 @@ gender = {
 	2 : 'Neut',
 	'ERROR' : ''
 }
-
-"""
-pos_transl = {
-	"adj" : "ADJ", #Επίθετα
-	"n" : "NOUN", #
-	"vblex" : "VERB"
-	"np" : "PROPN" #Κύριο όνομα
-	"adv" : "ADV" #
-	"prn" : "PRON"#Αντωνυμίες
-	"pr" : "ADP" #Προθέσεις
-	"det" : "DET"#Αρθρα
-	"num" : "NUM"#αριθμητικά
-	"cnjcoo" : "CCONJ"#Παρατακτικοί
-	"cnjsub" : "SCONJ"#Υποτακτικοί
-	"κατι":"PUNCT"#Σημεία στίξης
-	"κατι και εδω":"PART"#Μόρια
-}"""
 
 def print_forms(s, lemma, pos, genos, ptwsi, arithmos, degree, greek_pos, tag):
 	if s.strip() == '':
