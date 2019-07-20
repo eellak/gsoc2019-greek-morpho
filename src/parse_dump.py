@@ -20,7 +20,6 @@ def parse_translations(code, title):
 				continue
 			cur.execute("INSERT INTO translations VALUES(?,?,?,?,?)",
 			('el', title, b.group('LANG'), b.group('TRANSLATION'), a.group('SENSE')))
-			# print("%s:%s:%s:%s" % (title, b.group('LANG'), b.group('TRANSLATION'), a.group('CASE')))
 
 
 def parse_normalisation(code, title):
