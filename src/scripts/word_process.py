@@ -1,6 +1,7 @@
+import argparse
 import sys
 import re
-import argparse
+
 
 parser = argparse.ArgumentParser(description='''
     A tool that performs frequency counting, and cleanup of

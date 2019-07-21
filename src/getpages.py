@@ -2,18 +2,31 @@
 # http://pymediawiki.readthedocs.io/en/latest/code.html
 
 # TODO διαγράφω
+import argparse
 import sys
 import re
 from mediawiki import MediaWiki
 from parse import AdjParser, parse_noun, wword, conn, is_complete, form_exists, parse_code, cur
 from verb import parse_verb
+
+
+parser = argparse.ArgumentParser(description='''
+    Download and parse pages from el.wiktionary.org''')
+
+optional = parser.add_argument_group('optional arguments')
+
+optional.add_argument('--production', help="run on all greek lemmas (by default it runs on selected pages)",
+                      dest='production',action='store_true')
+
+args = parser.parse_args()
+
 mw = MediaWiki(url='https://el.wiktionary.org/w/api.php',timeout=100.0)
 
 NotDetectedAdj = open("NotDetectedAdj.dic","a")
 
 print('Getting lemmas')
 
-if len(sys.argv) == 2 and sys.argv[1] == 'production':
+if args.production:
 	nouns = mw.categorymembers(category='Ουσιαστικά (νέα ελληνικά)', results=100000, subcategories=False)#πρέπει να βάλουμε πολυλεκτικούς όρους
 	proper_nouns = mw.categorymembers(category='Κύρια ονόματα (νέα ελληνικά)', results=100000,subcategories=False)
 	adj = mw.categorymembers(category='Επίθετα (νέα ελληνικά)', results=100000, subcategories=False)
