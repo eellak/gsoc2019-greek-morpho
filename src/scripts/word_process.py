@@ -1,9 +1,23 @@
 import sys
 import re
+import argparse
+
+parser = argparse.ArgumentParser(description='''
+    A tool that performs frequency counting, and cleanup of
+    a word list produced by a tokenizer like fast-tokenizer''')
+
+optional = parser.add_argument_group('optional arguments')
+
+optional.add_argument('--min-count', help='minimun number of occurances (default = 1)',
+                      dest='min_count', type=int, default=1)
+optional.add_argument('--no-print-freq', help="don't print fequency count",
+                      dest='no_print_freq',action='store_true')
+
+args = parser.parse_args()
 
 words = {}
 
-min_count_found = 1
+min_freq_count = args.min_count
 
 in_file = sys.stdin
 line = in_file.readline()
@@ -38,7 +52,7 @@ for x,y in words.items():
 	
 	should_be_put = True
 	
-	if y < min_count_found:
+	if y < min_freq_count:
 		continue
 	
 	elif re.fullmatch("[αβγδεζηθικλμνξοπρστυφχψωςϋϊ]*[αεηιυοωϋϊ]+[βγδζθκλμνξπρστφχψς]+[αεηιυοωϋϊ]+[αβγδεζηθικλμνξοπρστυφχψωςϋϊ]*",x) is not None:
@@ -69,4 +83,7 @@ for x,y in words.items():
 		word_list.append((x,y))
 
 for x,y in sorted(word_list):
-	print(x,y)
+	if args.no_print_freq:
+		print(x)
+	else:
+		print(x,y)
