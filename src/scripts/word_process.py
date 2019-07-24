@@ -56,7 +56,7 @@ for x,y in words.items():
 	if y < min_freq_count:
 		continue
 	
-	elif re.fullmatch("[αβγδεζηθικλμνξοπρστυφχψωςϋϊ]*[αεηιυοωϋϊ]+[βγδζθκλμνξπρστφχψς]+[αεηιυοωϋϊ]+[αβγδεζηθικλμνξοπρστυφχψωςϋϊ]*",x) is not None:
+	elif re.fullmatch("[αβγδεζηθικλμνξοπρστυφχψωςϋϊ]*[αεηιυοωϋϊ]+[βγδζθκλμνξπρστφχψς]+[αεηιυοωϋϊ]+[αβγδεζηθικλμνξοπρστυφχψωςϋϊ]*",x,re.UNICODE) is not None:
 		# print('#άτονο#',x)
 		continue
 	# if there is the same word in lower case, skip it	
