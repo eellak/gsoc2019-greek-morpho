@@ -63,7 +63,6 @@ for x,y in words.items():
 	elif re.fullmatch(r"[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΫΪαβγδεζηθικλμνξοπρστυφχψωςϋϊ]*[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΫΪαεηιυοωϋϊ]+[βγδζθκλμνξπρστφχψς]+[αεηιυοωϋϊ]+[αβγδεζηθικλμνξοπρστυφχψωςϋϊ]*",x,re.UNICODE) is not None:
 		# print('#άτονο#',x)
 		continue
-	elif re.
 	# remove words with probably wrong capital letters (at least 2 in the beginning) or with non capital in the middle
 	elif re.search(r'([ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ]{2,}[αβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱ]|[αβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱ][ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏΫΪ])',x,re.UNICODE) is not None:
 		continue
