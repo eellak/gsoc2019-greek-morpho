@@ -93,14 +93,23 @@ def get_forms(s):
 				j += 1
 			if tmp != '':
 				res += [tmp]
+			
+			t = ''
 
 			if ')' not in i:
 				continue
 			j += 1
 			while i[j] != ')':
-				tmp += i[j]
+				t += i[j]
 				j += 1
-			res += [tmp]
+
+			# if it is large, it is probably not an ending
+			# so add it as a seperate word
+
+			if len(t) > 4: 
+				res += [t]
+			else: 
+				res += [tmp+t]
 		else:
 			res += [i]
 	return res
