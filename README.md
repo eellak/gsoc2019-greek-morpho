@@ -8,23 +8,7 @@ It contains about 518000 distinct surface forms and about 900000 forms with morp
 
 ## Running the script
 
-### Dependencies
-
-```
-pip3 install pymediawiki
-```
-
-### Run Testing
-
-```
-python3 getpages.py
-```
-
-### Run production
-
-```
-python3 getpages.py production
-```
+Information about running the script is found [here](doc/wiktionary_script.md)
 
 ## Project goals
 
