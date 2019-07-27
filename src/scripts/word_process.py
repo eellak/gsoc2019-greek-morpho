@@ -18,6 +18,9 @@ optional.add_argument('--no-print-freq', help="don't print fequency count",
 optional.add_argument('--min-capital-freq',help='''minimun number of occurances 
        for words containing only capital letters (default = 1)''',dest='min_cap_freq',type=int,default = 1)
 
+optional.add_argument('--sort-on-freq',help='sort on word frequency',
+                      dest='sort_on_freq',action='store_true')
+
 args = parser.parse_args()
 
 words = {}
@@ -61,12 +64,23 @@ for x,y in words.items():
 		continue
 	# remove words with no accent and at least 2 sylables
 	elif re.fullmatch(r"[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΫΪαβγδεζηθικλμνξοπρστυφχψωςϋϊ]*[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΫΪαεηιυοωϋϊ]+[βγδζθκλμνξπρστφχψς]+[αεηιυοωϋϊ]+[αβγδεζηθικλμνξοπρστυφχψωςϋϊ]*",x,re.UNICODE) is not None:
-		# print('#άτονο#',x)
 		continue
 	# remove words with probably wrong capital letters (at least 2 in the beginning) or with non capital in the middle
 	elif re.search(r'([ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ]{2,}[αβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱ]|[αβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱ][ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏΫΪ])',x,re.UNICODE) is not None:
 		continue
+	# not possible letter combinations in Greek
+	elif re.search(r'(τπ|λλλ|σσσ|κκκ|τττ|ρρρ|γγγ|θθ|ηη|μμμ|ννν|ςς|ζζ|ξξ|ooo|πππ)', x, re.UNICODE) is not None:
+		continue
 	elif re.fullmatch(r'[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏΫΪ]+', x, re.UNICODE) is not None and y < args.min_cap_freq:
+		continue
+	# τόνος πριν την προ παραλήγουσα
+	elif re.search(r'[ΆΈΉΊΌΎΏέάώήίύόΐΰ].*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ].*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ].*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ]', x, re.UNICODE):
+		continue
+	# οι τόνοι δεν πρέπει να είναι δίπλα δίπλα
+	elif re.search(r'[ΆΈΉΊΌΎΏέάώήίύόΐΰ][βγδζθκλμνξπρστφχψ]*[έάώήίύόΐΰ]', x, re.UNICODE) is not None:
+		continue
+	# κεφαλαία με τόνο στη μέση
+	elif re.search(r'[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏΫΪ].*[ΆΈΉΊΌΎΏ]', x, re.UNICODE) is not None:
 		continue
 	# if there is the same word in lower case, skip it	
 	elif x != x.lower():
@@ -92,7 +106,7 @@ for x,y in words.items():
 	if should_be_put:
 		word_list.append((x,y))
 
-for x,y in sorted(word_list):
+for x,y in sorted(word_list,key=lambda x: -x[1] if args.sort_on_freq else x[0]):
 	if args.no_print_freq:
 		print(x)
 	else:
