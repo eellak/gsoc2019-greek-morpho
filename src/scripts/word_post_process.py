@@ -66,10 +66,10 @@ for x,y in words.items():
 	elif re.fullmatch(r"[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΫΪαβγδεζηθικλμνξοπρστυφχψωςϋϊ]*[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΫΪαεηιυοωϋϊ]+[βγδζθκλμνξπρστφχψς]+[αεηιυοωϋϊ]+[αβγδεζηθικλμνξοπρστυφχψωςϋϊ]*",x,re.UNICODE) is not None:
 		continue
 	# remove words with probably wrong capital letters (at least 2 in the beginning) or with non capital in the middle
-	elif re.search(r'([ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ]{2,}[αβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱ]|[αβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱ][ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏΫΪ])',x,re.UNICODE) is not None:
+	elif re.search(r'([ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏ]{2,}[αβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱ]|[αβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱ][ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏΫΪ])',x,re.UNICODE) is not None:
 		continue
 	# not possible letter combinations in Greek
-	elif re.search(r'(τπ|λλλ|σσσ|κκκ|τττ|ρρρ|γγγ|θθ|ηη|μμμ|ννν|ςς|ζζ|ξξ|ooo|πππ)', x, re.UNICODE) is not None:
+	elif re.search(r'(τπ|λλλ|σσσ|κκκ|τττ|ρρρ|γγγ|θθ|ηη|μμμ|ννν|ςς|ζζ|ξξ|ooo|πππ|σ$)', x, re.UNICODE) is not None:
 		continue
 	elif re.fullmatch(r'[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏΫΪ]+', x, re.UNICODE) is not None and y < args.min_cap_freq:
 		continue
@@ -79,8 +79,8 @@ for x,y in words.items():
 	# οι τόνοι δεν πρέπει να είναι δίπλα δίπλα
 	elif re.search(r'[ΆΈΉΊΌΎΏέάώήίύόΐΰ][βγδζθκλμνξπρστφχψ]*[έάώήίύόΐΰ]', x, re.UNICODE) is not None:
 		continue
-	# κεφαλαία με τόνο στη μέση
-	elif re.search(r'[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏΫΪ].*[ΆΈΉΊΌΎΏ]', x, re.UNICODE) is not None:
+	# τόνος σε λέξη με τουλάχιστον 2 κεφαλαία
+	elif re.search(r'[ΆΈΉΊΌΎΏΫΪ].*[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏ]|[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ].*[ΆΈΉΊΌΎΏΫΪ]', x, re.UNICODE) is not None:
 		continue
 	# if there is the same word in lower case, skip it	
 	elif x != x.lower():
