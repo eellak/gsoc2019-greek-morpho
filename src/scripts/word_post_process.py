@@ -21,6 +21,10 @@ optional.add_argument('--min-capital-freq',help='''minimun number of occurances
 optional.add_argument('--sort-on-freq',help='sort on word frequency',
                       dest='sort_on_freq',action='store_true')
 
+optional.add_argument('--no-capital-norm', help='''do not attempt to
+remove words with capital letters that also exist in lower case form''',
+                      dest='no_capital_norm',action='store_true')
+
 args = parser.parse_args()
 
 words = {}
@@ -63,7 +67,7 @@ for x,y in words.items():
 	if y < min_freq_count:
 		continue
 	# remove words with no accent and at least 2 sylables
-	elif re.fullmatch(r"[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΫΪαβγδεζηθικλμνξοπρστυφχψωςϋϊ]*[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΫΪαεηιυοωϋϊ]+[βγδζθκλμνξπρστφχψς]+[αεηιυοωϋϊ]+[αβγδεζηθικλμνξοπρστυφχψωςϋϊ]*",x,re.UNICODE) is not None:
+	elif re.fullmatch(r"[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΫΪαβγδεζηθικλμνξοπρστυφχψωςϋϊ]*[ΑΕΗΙΟΥΩΫΪαεηιυοωϋϊ]+[βγδζθκλμνξπρστφχψς]+[αεηιυοωϋϊ]+[αβγδεζηθικλμνξοπρστυφχψωςϋϊ]*",x,re.UNICODE) is not None:
 		continue
 	# remove words with probably wrong capital letters (at least 2 in the beginning) or with non capital in the middle
 	elif re.search(r'([ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏ]{2,}[αβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱ]|[αβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱ][ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏΫΪ])',x,re.UNICODE) is not None:
@@ -83,7 +87,7 @@ for x,y in words.items():
 	elif re.search(r'[ΆΈΉΊΌΎΏΫΪ].*[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏ]|[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ].*[ΆΈΉΊΌΎΏΫΪ]', x, re.UNICODE) is not None:
 		continue
 	# if there is the same word in lower case, skip it	
-	elif x != x.lower():
+	elif not args.no_capital_norm and x != x.lower():
 		if x.lower() in words: 
 			continue
 		lowered = x.lower()
