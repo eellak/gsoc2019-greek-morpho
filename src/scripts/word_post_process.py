@@ -73,7 +73,7 @@ for x,y in words.items():
 	elif re.search(r'([ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏ]{2,}[αβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱ]|[αβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱ][ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏΫΪ])',x,re.UNICODE) is not None:
 		continue
 	# not possible letter combinations in Greek
-	elif re.search(r'(τπ|λλλ|σσσ|κκκ|τττ|ρρρ|γγγ|θθ|ηη|μμμ|ννν|ςς|ζζ|ξξ|ooo|πππ|σ$)', x, re.UNICODE) is not None:
+	elif re.search(r'(ς.+|τπ|λλλ|σσσ|κκκ|τττ|ρρρ|γγγ|θθ|ηη|μμμ|ννν|ςς|ζζ|ξξ|ooo|πππ|σ$)', x, re.UNICODE) is not None:
 		continue
 	elif re.fullmatch(r'[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏΫΪ]+', x, re.UNICODE) is not None and y < args.min_cap_freq:
 		continue
