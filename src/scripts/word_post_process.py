@@ -13,18 +13,22 @@ optional.add_argument('--min-freq', help='minimun number of occurances (default 
                       dest='min_freq', type=int, default=1)
 
 optional.add_argument('--no-print-freq', help="don't print fequency count",
-                      dest='no_print_freq',action='store_true')
+                      dest='no_print_freq', action='store_true')
 
-optional.add_argument('--min-capital-freq',help='''minimun number of occurances 
-       for words containing only capital letters (default = 1)''',dest='min_cap_freq',type=int,default = 1)
+optional.add_argument('--min-capital-freq', help='''minimun number of occurances 
+       for words containing only capital letters (default = 1)''', dest='min_cap_freq', type=int, default=1)
 
-optional.add_argument('--sort-on-freq',help='sort on word frequency',
-                      dest='sort_on_freq',action='store_true')
+optional.add_argument('--sort-on-freq', help='sort on word frequency',
+                      dest='sort_on_freq', action='store_true')
+
+optional.add_argument('--no-cleanup', help='''don't try to remove words with
+common spelling errors''', dest='no_cleanup', action='store_true')
 
 optional.add_argument('--no-capital-norm', help='''do not attempt to
 remove words with capital letters that also exist in lower case form''',
-                      dest='no_capital_norm',action='store_true')
+                      dest='no_capital_norm', action='store_true')
 
+optional.add_argument
 args = parser.parse_args()
 
 words = {}
@@ -53,8 +57,13 @@ while line != '':
 	line = line.strip()
 	if line.strip() in words:
 		words[line] += 1
-	elif line != '':
+	elif ' ' not in line:
 		words[line] = 1
+	else:
+		m = re.fullmatch(r'([^ ]+) (\d+)', line, re.UNICODE)
+		if m is not None:
+			words[m.group(1)] += m.group(2)
+
 	line = in_file.readline()
 
 # second pass, remove probably wrong words
@@ -64,48 +73,52 @@ for x,y in words.items():
 	
 	should_be_put = True
 	
-	if y < min_freq_count:
-		continue
-	# remove words with no accent and at least 2 sylables
-	elif re.fullmatch(r"[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΫΪαβγδεζηθικλμνξοπρστυφχψωςϋϊ]*[ΑΕΗΙΟΥΩΫΪαεηιυοωϋϊ]+[βγδζθκλμνξπρστφχψς]+[αεηιυοωϋϊ]+[αβγδεζηθικλμνξοπρστυφχψωςϋϊ]*",x,re.UNICODE) is not None:
-		continue
-	# remove words with probably wrong capital letters (at least 2 in the beginning) or with non capital in the middle
-	elif re.search(r'([ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏ]{2,}[αβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱ]|[αβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱ][ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏΫΪ])',x,re.UNICODE) is not None:
-		continue
-	# not possible letter combinations in Greek
-	elif re.search(r'(ς.+|τπ|λλλ|σσσ|κκκ|τττ|ρρρ|γγγ|θθ|ηη|μμμ|ννν|ςς|ζζ|ξξ|ooo|πππ|σ$)', x, re.UNICODE) is not None:
-		continue
-	elif re.fullmatch(r'[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏΫΪ]+', x, re.UNICODE) is not None and y < args.min_cap_freq:
-		continue
-	# τόνος πριν την προ παραλήγουσα
-	elif re.search(r'[ΆΈΉΊΌΎΏέάώήίύόΐΰ].*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ].*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ].*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ]', x, re.UNICODE):
-		continue
-	# οι τόνοι δεν πρέπει να είναι δίπλα δίπλα
-	elif re.search(r'[ΆΈΉΊΌΎΏέάώήίύόΐΰ][βγδζθκλμνξπρστφχψ]*[έάώήίύόΐΰ]', x, re.UNICODE) is not None:
-		continue
-	# τόνος σε λέξη με τουλάχιστον 2 κεφαλαία
-	elif re.search(r'[ΆΈΉΊΌΎΏΫΪ].*[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏ]|[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ].*[ΆΈΉΊΌΎΏΫΪ]', x, re.UNICODE) is not None:
-		continue
-	# if there is the same word in lower case, skip it	
-	elif not args.no_capital_norm and x != x.lower():
-		if x.lower() in words: 
+	if not args.no_cleanup:
+		if y < min_freq_count:
 			continue
-		lowered = x.lower()
+		# remove words with no accent and at least 2 sylables
+		elif re.fullmatch(r"[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΫΪαβγδεζηθικλμνξοπρστυφχψωςϋϊ]*[ΑΕΗΙΟΥΩΫΪαεηιυοωϋϊ]+[βγδζθκλμνξπρστφχψς]+[αεηιυοωϋϊ]+[αβγδεζηθικλμνξοπρστυφχψωςϋϊ]*",x,re.UNICODE) is not None:
+			continue
+		# remove words with probably wrong capital letters (at least 2 in the beginning) or with non capital in the middle
+		elif re.search(r'([ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏ]{2,}[αβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱ]|[αβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱ][ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏΫΪ])',x,re.UNICODE) is not None:
+			continue
+		# not possible letter combinations in Greek
+		elif re.search(r'(ς.+|τπ|λλλ|σσσ|κκκ|τττ|ρρρ|γγγ|θθ|ηη|μμμ|ννν|ςς|ζζ|ξξ|ooo|πππ|σ$)', x, re.UNICODE) is not None:
+			continue
+		elif re.fullmatch(r'[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏΫΪ]+', x, re.UNICODE) is not None and y < args.min_cap_freq:
+			continue
+		# τόνος πριν την προ παραλήγουσα
+		elif re.search(r'[ΆΈΉΊΌΎΏέάώήίύόΐΰ].*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ].*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ].*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ]', x, re.UNICODE):
+			continue
+		# οι τόνοι δεν πρέπει να είναι δίπλα δίπλα
+		elif re.search(r'[ΆΈΉΊΌΎΏέάώήίύόΐΰ][βγδζθκλμνξπρστφχψ]*[έάώήίύόΐΰ]', x, re.UNICODE) is not None:
+			continue
+		# τόνος σε λέξη με τουλάχιστον 2 κεφαλαία
+		elif re.search(r'[ΆΈΉΊΌΎΏΫΪ].*[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏ]|[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ].*[ΆΈΉΊΌΎΏΫΪ]', x, re.UNICODE) is not None:
+			continue
+		# μονοσύλαβες με τόνο. Οι εξαιρέσεις βρίσκονται στο αντίστοιχο αρχείο
+		elif re.fullmatch(r'[ΒΓΔΖΘΚΛΜΝΞΠΡΣΤΦΧΨβγδζθκλμνξπρστφχψς]*([ΆΈΉΊΌΎΏάέήίόύώΐΰἱ]|αί|οί|ού|εί)[βγδζθκλμνξπρστφχψς]*', x, re.UNICODE) is not None:
+			continue
+		# if there is the same word in lower case, skip it
+		elif not args.no_capital_norm and x != x.lower():
+			if x.lower() in words:
+				continue
+			lowered = x.lower()
 
-		if lowered[-1] == 'σ':
-			lowered = lowered[:len(lowered)-1] + 'ς'
+			if lowered[-1] == 'σ':
+				lowered = lowered[:len(lowered)-1] + 'ς'
 
-		for i in range(len(lowered)):
-			if lowered[i] in se_tonismena:
-				tmp = lowered[:i] + se_tonismena[lowered[i]] + lowered[i+1:]
-				# print(x,tmp)
-				if tmp in words:
-					should_be_put = False
-				
-				# first character can be upper
-				tmp = lowered[0].upper() + lowered[1:i] + se_tonismena[lowered[i]] + lowered[i+1:]
-				if tmp in words:
-					should_be_put = False
+			for i in range(len(lowered)):
+				if lowered[i] in se_tonismena:
+					tmp = lowered[:i] + se_tonismena[lowered[i]] + lowered[i+1:]
+					# print(x,tmp)
+					if tmp in words:
+						should_be_put = False
+
+					# first character can be upper
+					tmp = lowered[0].upper() + lowered[1:i] + se_tonismena[lowered[i]] + lowered[i+1:]
+					if tmp in words:
+						should_be_put = False
 
 	if should_be_put:
 		word_list.append((x,y))
