@@ -1,4 +1,7 @@
-# Creation of a table based lemmatizer
+
+# Example queries
+
+## Creation of a table based lemmatizer
 
 This query creates a lemmatizer with the following properties
 
@@ -17,7 +20,7 @@ SELECT form , lemma FROM lookup
 	WHERE form IN (SELECT form FROM lookup GROUP BY form HAVING count(form) = 1);
 ```
 
-# All female name forms
+## All female name forms
 
 ```sql
 SELECT count(DISTINCT form) FROM words WHERE tags like '%Ant%' AND gender = 'Fem';
