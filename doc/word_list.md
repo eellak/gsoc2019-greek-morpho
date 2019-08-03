@@ -11,7 +11,7 @@ Stages
 1. *(optional)* text preprocess script depending on the type of the text
 
 2. a tokenizer outputting result as one word per line
-(only greek words without puctuation or symbols). For this
+(only greek words without puctuation or symbols). For this task
 we use the tokenizer found in fast-tokenizer submodule.
 If a line contains a decimal number after the word, it is assumed that
 the number is the frequency of the word. This is useful when spelling
@@ -25,13 +25,13 @@ outputs a dictionary with frequency information
 Dictionary for Greek Wikipedia dump with frequency information
 
 ```
-bzcat wiki.dump | ftok -a greek | python3 word_post_process.py --min-freq 2 > dict.dic
+bzcat wiki.dump.bz2 | ftok -a greek | python3 word_post_process.py --min-freq 2 > dict.dic
 ```
 
 *ftok -a greek* performs tokenization of the text from stdin and outputs
 to stdout only greek words
 
-As Wikipedia contains many spelling errors here we include words having frequency at least 2
+As Wikipedia contains many spelling errors, we include words having frequency at least 2
 
 It is advised to use text sources with better spelling quality than Wikipedia
 
