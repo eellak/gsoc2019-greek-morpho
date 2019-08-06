@@ -62,7 +62,10 @@ while line != '':
 	else:
 		m = re.fullmatch(r'([^ ]+) (\d+)', line, re.UNICODE)
 		if m is not None:
-			words[m.group(1)] += m.group(2)
+			if m.group(1) in words:
+				words[m.group(1)] += int(m.group(2))
+			else:
+				words[m.group(1)] = int(m.group(2))
 
 	line = in_file.readline()
 
