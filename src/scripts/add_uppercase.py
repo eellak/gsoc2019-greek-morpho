@@ -1,4 +1,5 @@
 import sys
+import re
 
 if len(sys.argv) == 1:
 	in_file = sys.stdin
@@ -10,7 +11,6 @@ else:
 
 line = in_file.readline()
 
-# TODO άι -> AΪ
 se_atona = {
 	'Ά' : 'Α',
 	'Έ' : 'Ε',
@@ -31,7 +31,10 @@ def no_accent(s):
 	return s
 
 while line != '':
-	tmp = no_accent(line)
+	# άι -> ΑΪ
+	tmp = re.sub(r'(?<=[άΆύΎόΌέΈ])[ιΙ]', 'Ϊ',line,re.UNICODE)
+	tmp = re.sub(r'(?<=[άΆόΌ])[υΥ]', 'Ϋ',tmp,re.UNICODE)
+	tmp = no_accent(tmp)
 	tmp = tmp.upper()
 	tmp = no_accent(tmp)
 	print(line,end='')
