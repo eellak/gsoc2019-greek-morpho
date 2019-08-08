@@ -28,6 +28,9 @@ optional.add_argument('--no-capital-norm', help='''do not attempt to
 remove words with capital letters that also exist in lower case form''',
                       dest='no_capital_norm', action='store_true')
 
+optional.add_argument('--min-length', help='min word length',
+                      dest='min_length', type=int, default=1)
+
 optional.add_argument
 args = parser.parse_args()
 
@@ -77,7 +80,7 @@ for x,y in words.items():
 	should_be_put = True
 	
 	if not args.no_cleanup:
-		if y < min_freq_count:
+		if y < min_freq_count or len(x) < args.min_length:
 			continue
 		# remove words with no accent and at least 2 sylables
 		elif re.fullmatch(r"[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΫΪαβγδεζηθικλμνξοπρστυφχψωςϋϊ]*[ΑΕΗΙΟΥΩΫΪαεηιυοωϋϊ]+[βγδζθκλμνξπρστφχψς]+[αεηιυοωϋϊ]+[αβγδεζηθικλμνξοπρστυφχψωςϋϊ]*",x,re.UNICODE) is not None:
@@ -91,7 +94,8 @@ for x,y in words.items():
 		elif re.fullmatch(r'[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΆΈΉΊΌΎΏΫΪ]+', x, re.UNICODE) is not None and y < args.min_cap_freq:
 			continue
 		# τόνος πριν την προ παραλήγουσα
-		elif re.search(r'[ΆΈΉΊΌΎΏέάώήίύόΐΰ].*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ].*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ].*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ]', x, re.UNICODE):
+		elif re.search(r'([άέό][ιυ]|[ΆΈΉΊΌΎΏέάώήίύόΐΰ].*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ]).*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ].*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ]', x, re.UNICODE):
+			print(x,file=sys.stderr)
 			continue
 		# οι τόνοι δεν πρέπει να είναι δίπλα δίπλα
 		elif re.search(r'[ΆΈΉΊΌΎΏέάώήίύόΐΰ][βγδζθκλμνξπρστφχψ]*[έάώήίύόΐΰ]', x, re.UNICODE) is not None:
