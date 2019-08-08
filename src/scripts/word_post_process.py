@@ -31,14 +31,22 @@ remove words with capital letters that also exist in lower case form''',
 optional.add_argument('--min-length', help='min word length',
                       dest='min_length', type=int, default=1)
 
-optional.add_argument
+optional.add_argument('--only-freq', help='update only frequencies to specified dictionary',
+						dest='only_freq')
+
 args = parser.parse_args()
 
 words = {}
 
 min_freq_count = args.min_freq
 
-in_file = sys.stdin
+if args.only_freq is None:
+	in_file = sys.stdin
+else:
+	in_file = open(args.only_freq,"r")
+
+print(args.only_freq,file=sys.stderr)
+
 line = in_file.readline()
 
 # συν διαλυτικά
@@ -72,6 +80,21 @@ while line != '':
 
 	line = in_file.readline()
 
+# stage for only freq
+if args.only_freq is not None:
+	in_file = sys.stdin
+	line = in_file.readline()
+	while line != '':
+		line = line.strip()
+		if line.strip() in words:
+			words[line] += 1
+		else:
+			m = re.fullmatch(r'([^ ]+) (\d+)', line, re.UNICODE)
+			if m is not None:
+				if m.group(1) in words:
+					words[m.group(1)] += int(m.group(2))
+		line = in_file.readline()
+
 # second pass, remove probably wrong words
 word_list = []
 
@@ -79,7 +102,7 @@ for x,y in words.items():
 	
 	should_be_put = True
 	
-	if not args.no_cleanup:
+	if not args.no_cleanup or args.only_freq is not None:
 		if y < min_freq_count or len(x) < args.min_length:
 			continue
 		# remove words with no accent and at least 2 sylables
@@ -95,7 +118,6 @@ for x,y in words.items():
 			continue
 		# τόνος πριν την προ παραλήγουσα
 		elif re.search(r'([άέό][ιυ]|[ΆΈΉΊΌΎΏέάώήίύόΐΰ].*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ]).*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ].*[βγδζθκλμνξπρστφχψ].*[έάώήίύόαεηιυοωϋϊΐΰ]', x, re.UNICODE):
-			print(x,file=sys.stderr)
 			continue
 		# οι τόνοι δεν πρέπει να είναι δίπλα δίπλα
 		elif re.search(r'[ΆΈΉΊΌΎΏέάώήίύόΐΰ][βγδζθκλμνξπρστφχψ]*[έάώήίύόΐΰ]', x, re.UNICODE) is not None:
