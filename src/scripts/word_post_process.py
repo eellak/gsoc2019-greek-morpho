@@ -32,7 +32,10 @@ optional.add_argument('--min-length', help='min word length',
                       dest='min_length', type=int, default=1)
 
 optional.add_argument('--only-freq', help='update only frequencies to specified dictionary',
-						dest='only_freq')
+                      dest='only_freq')
+
+optional.add_argument('--no-symbols', help='remove words with symbols',
+                      dest='no_symbols', action='store_true')
 
 args = parser.parse_args()
 
@@ -44,8 +47,6 @@ if args.only_freq is None:
 	in_file = sys.stdin
 else:
 	in_file = open(args.only_freq,"r")
-
-print(args.only_freq,file=sys.stderr)
 
 line = in_file.readline()
 
@@ -102,7 +103,8 @@ for x,y in words.items():
 	
 	should_be_put = True
 	
-	if not args.no_cleanup or args.only_freq is not None:
+	if not args.no_cleanup and (args.only_freq is None):
+
 		if y < min_freq_count or len(x) < args.min_length:
 			continue
 		# remove words with no accent and at least 2 sylables
@@ -127,6 +129,8 @@ for x,y in words.items():
 			continue
 		# μονοσύλαβες με τόνο. Οι εξαιρέσεις βρίσκονται στο αντίστοιχο αρχείο
 		elif re.fullmatch(r'[ΒΓΔΖΘΚΛΜΝΞΠΡΣΤΦΧΨβγδζθκλμνξπρστφχψς]*([ΆΈΉΊΌΎΏάέήίόύώΐΰἱ]|αί|οί|ού|εί)[βγδζθκλμνξπρστφχψς]*', x, re.UNICODE) is not None:
+			continue
+		elif args.no_symbols and re.search(r'[0-9\-\.\\\/]', x, re.UNICODE) is not None:
 			continue
 		# if there is the same word in lower case, skip it
 		elif not args.no_capital_norm and x != x.lower():
