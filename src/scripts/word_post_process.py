@@ -37,6 +37,9 @@ optional.add_argument('--only-freq', help='update only frequencies to specified 
 optional.add_argument('--no-symbols', help='remove words with symbols',
                       dest='no_symbols', action='store_true')
 
+optional.add_argument('--no-ancient', help='remove words which are probably ancient',
+                      dest='no_ancient', action='store_true')
+
 args = parser.parse_args()
 
 words = {}
@@ -130,7 +133,9 @@ for x,y in words.items():
 		# μονοσύλαβες με τόνο. Οι εξαιρέσεις βρίσκονται στο αντίστοιχο αρχείο
 		elif re.fullmatch(r'[ΒΓΔΖΘΚΛΜΝΞΠΡΣΤΦΧΨβγδζθκλμνξπρστφχψς]*([ΆΈΉΊΌΎΏάέήίόύώΐΰἱ]|αί|οί|ού|εί)[βγδζθκλμνξπρστφχψς]*', x, re.UNICODE) is not None:
 			continue
-		elif args.no_symbols and re.fullmatch(r'[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ]+', x, re.UNICODE) is None:
+		elif args.no_symbols and re.fullmatch(r'[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊΆΈΉΊΌΎΏΫΪ]+', x, re.UNICODE) is None:
+			continue
+		elif args.no_ancient and re.search(r'(ξ|ψ|ιν|ην|ον|[^ε]ις)$', x, re.UNICODE) is not None:
 			continue
 		# if there is the same word in lower case, skip it
 		elif not args.no_capital_norm and x != x.lower():
