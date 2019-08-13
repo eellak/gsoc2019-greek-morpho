@@ -130,7 +130,7 @@ for x,y in words.items():
 		# μονοσύλαβες με τόνο. Οι εξαιρέσεις βρίσκονται στο αντίστοιχο αρχείο
 		elif re.fullmatch(r'[ΒΓΔΖΘΚΛΜΝΞΠΡΣΤΦΧΨβγδζθκλμνξπρστφχψς]*([ΆΈΉΊΌΎΏάέήίόύώΐΰἱ]|αί|οί|ού|εί)[βγδζθκλμνξπρστφχψς]*', x, re.UNICODE) is not None:
 			continue
-		elif args.no_symbols and re.search(r'[0-9\-\.\\\/]', x, re.UNICODE) is not None:
+		elif args.no_symbols and re.fullmatch(r'[ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυφχψωςάέήίόύώΐΰϋϊἱΆΈΉΊΌΎΏΫΪ]+', x, re.UNICODE) is None:
 			continue
 		# if there is the same word in lower case, skip it
 		elif not args.no_capital_norm and x != x.lower():
