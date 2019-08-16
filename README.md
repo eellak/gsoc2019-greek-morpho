@@ -2,9 +2,11 @@
 
 ## Dictionary Download
 
-The version v0.2 of the dictionary can be found [here](http://snf-869216.vm.okeanos.grnet.gr/dict-v0.2.zip)
+The version v0.2 of the morphological dictionary can be found [here](data/morph-dict-v0.2.zip).
 
 It contains about 518000 distinct surface forms and about 900000 forms with morphological information. 
+
+The spelling dictionary is found [here](data/)
 
 ## Running the script
 
@@ -23,8 +25,11 @@ will be added to the spelling tool dictionaries.
  Nouns, Proper Nouns, Adjectives, Verbs, Prepositions, Adverbs, Acronyms
  with information automatically extracted from the Greek wiktionary
  using Universal Dependencies Tagset.
-2. Addition of the extracted words and POS to open source Greek Spelling
- dictionaries and rules based on POS will be written.
+2. Addition of the extracted words to open source spelling dictionaries.
+
+## Final Report
+
+You can find the final report in the following [gist](https://gist.github.com/algorithm314/449e301c331c7d91a5116c0d00703a20).
 
 ## Timeline
 
