@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Konstantinos Agiannis" />
+  <title>Documentation for the GSOC 2019</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header>
+<h1 class="title">Documentation for the GSOC 2019</h1>
+<p class="author">Konstantinos Agiannis</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#quickstart">Quickstart</a><ul>
+<li><a href="#usage">USAGE</a><ul>
+<li><a href="#sqlite3-installation">SQLite3 installation</a></li>
+<li><a href="#other-dbms">Other DBMS</a></li>
+</ul></li>
+<li><a href="#source-code">SOURCE CODE</a></li>
+<li><a href="#license">LICENSE</a></li>
+</ul></li>
+<li><a href="#possible-use-cases">Possible use cases</a><ul>
+<li><a href="#lemmatizing-dictionary">Lemmatizing dictionary</a></li>
+<li><a href="#other-liguistic-resources">Other liguistic resources</a><ul>
+<li><a href="#thessaurus-synonyms">Thessaurus (synonyms)</a></li>
+<li><a href="#antonyms">Antonyms</a></li>
+<li><a href="#translations">Translations</a></li>
+<li><a href="#definitions-etymologies">Definitions, Etymologies</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#database-schema">Database schema</a></li>
+<li><a href="#example-queries">Example queries</a><ul>
+<li><a href="#creation-of-a-table-based-lemmatizer">Creation of a table based lemmatizer</a></li>
+<li><a href="#all-female-name-forms">All female name forms</a></li>
+</ul></li>
+<li><a href="#creating-the-morphological-dictionary">Creating the morphological dictionary</a><ul>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#running-the-script">Running the script</a></li>
+<li><a href="#running-on-the-wiktionary-dump">Running on the wiktionary dump</a></li>
+<li><a href="#pipeline">Pipeline</a></li>
+<li><a href="#example-usage">Example usage</a></li>
+</ul></li>
+<li><a href="#future-improvements">Future improvements</a><ul>
+<li><a href="#morphological-dictionary">Morphological dictionary</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="quickstart">Quickstart</h1>
+<h2 id="usage">USAGE</h2>
+<p>Using SQLite3</p>
+<pre><code>sqlite3 dict.db &lt; dict.sql</code></pre>
+<p>or</p>
+<pre><code>sqlite3 dict.db</code></pre>
+<p>and then</p>
+<pre><code>.read dict.sql</code></pre>
+<h3 id="sqlite3-installation">SQLite3 installation</h3>
+<pre><code>debian/ubuntu
+apt install sqlite3</code></pre>
+<h3 id="other-dbms">Other DBMS</h3>
+<p>For a GUI you can use <a href="https://sqlitebrowser.org/">sqlitebrowser</a></p>
+<p>For any other SQL DBMS (PostgreSQL, MySQL) use the appropriate commands for the import</p>
+<h2 id="source-code">SOURCE CODE</h2>
+<p><a href="https://github.com/eellak/gsoc2019-greek-morpho">GitHub Repository</a></p>
+<h2 id="license">LICENSE</h2>
+<p>Copyright (C) 2019, Konstantinos Agiannis</p>
+<p>This dictionary is licensed under <a href="https://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0</a></p>
+<p>It contains data extracted from <a href="https://el.wiktionary.org">el.wiktionary.org</a> licensed under the same license.</p>
+<h1 id="possible-use-cases">Possible use cases</h1>
+<h2 id="lemmatizing-dictionary">Lemmatizing dictionary</h2>
+<p>A lemmatizing dictionary is one of the most important liguistic resources necessary for NLP. For Greek there is none available open source one. Using this dictionary is easy to create one with an SQL query available in the examples.</p>
+<h2 id="other-liguistic-resources">Other liguistic resources</h2>
+<h3 id="thessaurus-synonyms">Thessaurus (synonyms)</h3>
+<p>It contains about 18500 synonyms for various languages. 12500 of which are for Greek.</p>
+<h3 id="antonyms">Antonyms</h3>
+<p>It contains about 5500 antonyms, 4300 of which are for Greek.</p>
+<h3 id="translations">Translations</h3>
+<p>The Database contains almost 150000 translations, from Greek to various languages. For more translations to Greek or different language pairs, it is better to check DBnary which has parsed translations from many more wiktionaries.</p>
+<h3 id="definitions-etymologies">Definitions, Etymologies</h3>
+<p>The database contains parsed definitions and etymologies for most lemmas.</p>
+<h1 id="database-schema">Database schema</h1>
+<p>The database contains information according to the following descriptions.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sql"><code class="sourceCode sql"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">CREATE</span> <span class="kw">TABLE</span> <span class="cf">IF</span> <span class="kw">NOT</span> <span class="kw">EXISTS</span> words(</a>
+<a class="sourceLine" id="cb5-2" title="2">    form TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</a>
+<a class="sourceLine" id="cb5-3" title="3">    lemma TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</a>
+<a class="sourceLine" id="cb5-4" title="4">    pos TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</a>
+<a class="sourceLine" id="cb5-5" title="5">    greek_pos TEXT,</a>
+<a class="sourceLine" id="cb5-6" title="6">    gender TEXT,</a>
+<a class="sourceLine" id="cb5-7" title="7">    ptosi TEXT,</a>
+<a class="sourceLine" id="cb5-8" title="8">    <span class="dt">number</span> TEXT,</a>
+<a class="sourceLine" id="cb5-9" title="9">    person NUM,</a>
+<a class="sourceLine" id="cb5-10" title="10">    tense TEXT,</a>
+<a class="sourceLine" id="cb5-11" title="11">    aspect TEXT,</a>
+<a class="sourceLine" id="cb5-12" title="12">    mood TEXT,</a>
+<a class="sourceLine" id="cb5-13" title="13">    verbform TEXT,</a>
+<a class="sourceLine" id="cb5-14" title="14">    voice TEXT,</a>
+<a class="sourceLine" id="cb5-15" title="15">    definite TEXT,</a>
+<a class="sourceLine" id="cb5-16" title="16">    <span class="kw">degree</span> TEXT,</a>
+<a class="sourceLine" id="cb5-17" title="17">    prontype TEXT,</a>
+<a class="sourceLine" id="cb5-18" title="18">    poss TEXT,</a>
+<a class="sourceLine" id="cb5-19" title="19">    tags TEXT,</a>
+<a class="sourceLine" id="cb5-20" title="20">    freq <span class="dt">INT</span></a>
+<a class="sourceLine" id="cb5-21" title="21">);</a>
+<a class="sourceLine" id="cb5-22" title="22"></a>
+<a class="sourceLine" id="cb5-23" title="23"><span class="kw">CREATE</span> <span class="kw">TABLE</span> <span class="cf">IF</span> <span class="kw">NOT</span> <span class="kw">EXISTS</span> def(</a>
+<a class="sourceLine" id="cb5-24" title="24">    lemma TEXT,</a>
+<a class="sourceLine" id="cb5-25" title="25">    def TEXT</a>
+<a class="sourceLine" id="cb5-26" title="26">);</a>
+<a class="sourceLine" id="cb5-27" title="27"></a>
+<a class="sourceLine" id="cb5-28" title="28"><span class="kw">CREATE</span> <span class="kw">TABLE</span> <span class="cf">IF</span> <span class="kw">NOT</span> <span class="kw">EXISTS</span> synonyms(</a>
+<a class="sourceLine" id="cb5-29" title="29">    lemma TEXT,</a>
+<a class="sourceLine" id="cb5-30" title="30">    syn TEXT</a>
+<a class="sourceLine" id="cb5-31" title="31">);</a>
+<a class="sourceLine" id="cb5-32" title="32"></a>
+<a class="sourceLine" id="cb5-33" title="33"><span class="kw">CREATE</span> <span class="kw">TABLE</span> <span class="cf">IF</span> <span class="kw">NOT</span> <span class="kw">EXISTS</span> antonyms(</a>
+<a class="sourceLine" id="cb5-34" title="34">    lemma TEXT,</a>
+<a class="sourceLine" id="cb5-35" title="35">    anton TEXT</a>
+<a class="sourceLine" id="cb5-36" title="36">);</a>
+<a class="sourceLine" id="cb5-37" title="37"></a>
+<a class="sourceLine" id="cb5-38" title="38"><span class="kw">CREATE</span> <span class="kw">TABLE</span> <span class="cf">IF</span> <span class="kw">NOT</span> <span class="kw">EXISTS</span> related(</a>
+<a class="sourceLine" id="cb5-39" title="39">    lemma TEXT,</a>
+<a class="sourceLine" id="cb5-40" title="40">    rel TEXT</a>
+<a class="sourceLine" id="cb5-41" title="41">);</a>
+<a class="sourceLine" id="cb5-42" title="42"></a>
+<a class="sourceLine" id="cb5-43" title="43"><span class="kw">CREATE</span> <span class="kw">TABLE</span> <span class="cf">IF</span> <span class="kw">NOT</span> <span class="kw">EXISTS</span> etymology(</a>
+<a class="sourceLine" id="cb5-44" title="44">    lemma TEXT,</a>
+<a class="sourceLine" id="cb5-45" title="45">    etym TEXT</a>
+<a class="sourceLine" id="cb5-46" title="46">);</a>
+<a class="sourceLine" id="cb5-47" title="47"></a>
+<a class="sourceLine" id="cb5-48" title="48"><span class="kw">CREATE</span> <span class="kw">TABLE</span> <span class="cf">IF</span> <span class="kw">NOT</span> <span class="kw">EXISTS</span> norm(</a>
+<a class="sourceLine" id="cb5-49" title="49">    lemma TEXT,</a>
+<a class="sourceLine" id="cb5-50" title="50">    norm TEXT</a>
+<a class="sourceLine" id="cb5-51" title="51">);</a>
+<a class="sourceLine" id="cb5-52" title="52"></a>
+<a class="sourceLine" id="cb5-53" title="53"><span class="kw">CREATE</span> <span class="kw">TABLE</span> <span class="cf">IF</span> <span class="kw">NOT</span> <span class="kw">EXISTS</span> translations(</a>
+<a class="sourceLine" id="cb5-54" title="54">    src TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</a>
+<a class="sourceLine" id="cb5-55" title="55">    src\_lemma TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</a>
+<a class="sourceLine" id="cb5-56" title="56">    dest TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</a>
+<a class="sourceLine" id="cb5-57" title="57">    dest\_lemma TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</a>
+<a class="sourceLine" id="cb5-58" title="58">    sense TEXT</a>
+<a class="sourceLine" id="cb5-59" title="59">);</a>
+<a class="sourceLine" id="cb5-60" title="60"></a>
+<a class="sourceLine" id="cb5-61" title="61"><span class="kw">CREATE</span> <span class="kw">INDEX</span> <span class="cf">IF</span> <span class="kw">NOT</span> <span class="kw">EXISTS</span> form\_indes <span class="kw">ON</span> words(form);</a></code></pre></div>
+<p>Data is described according to Universal Dependencies. Because tags for verbs are very complicated, an additional attribute greek_pos was added that simplifies pos information. Because case is a reserved word, the greek word ptosi was used instead.</p>
+<p>The attribute tags contains additional <em>space seperated</em> information described as follows:</p>
+<ul>
+<li><strong>Ant</strong>: Anthroponym</li>
+<li><strong>Top</strong>: Toponym</li>
+<li><strong>City</strong>,<strong>Country</strong>,<strong>Europe</strong>,<strong>Greece</strong>,<strong>EuropeanUnion</strong>,<strong>Informatics</strong>: Self explained</li>
+<li><strong>Element</strong>: Chemical Element</li>
+<li><strong>PolyTerm</strong>: Term composed of multiple words</li>
+<li><strong>Incomplete</strong>: No inflection table or gender(for nouns) found</li>
+</ul>
+<h1 id="example-queries">Example queries</h1>
+<h2 id="creation-of-a-table-based-lemmatizer">Creation of a table based lemmatizer</h2>
+<p>This query creates a lemmatizer with the following properties</p>
+<ul>
+<li>form != lemma</li>
+<li>It is a function. There are no two rows with same form and different lemmas</li>
+<li>Performs normalisation. επτά -&gt; εφτά</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sql"><code class="sourceCode sql"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">WITH</span> lookup <span class="kw">AS</span> </a>
+<a class="sourceLine" id="cb6-2" title="2">    (<span class="kw">SELECT</span> <span class="kw">DISTINCT</span> T1.form,T2.lemma <span class="kw">FROM</span> ((<span class="kw">SELECT</span> form,lemma <span class="kw">FROM</span> words) <span class="kw">AS</span> T1  </a>
+<a class="sourceLine" id="cb6-3" title="3">  <span class="kw">INNER</span> <span class="kw">JOIN</span> </a>
+<a class="sourceLine" id="cb6-4" title="4">    (<span class="kw">SELECT</span> form, lemma <span class="kw">FROM</span> words <span class="kw">UNION</span> <span class="kw">SELECT</span> lemma , norm <span class="kw">FROM</span> norm) <span class="kw">AS</span> T2 </a>
+<a class="sourceLine" id="cb6-5" title="5">  <span class="kw">ON</span> T1.lemma <span class="op">=</span> T2.form) </a>
+<a class="sourceLine" id="cb6-6" title="6">    <span class="kw">WHERE</span> T1.form <span class="op">!=</span> T2.lemma)</a>
+<a class="sourceLine" id="cb6-7" title="7"><span class="kw">SELECT</span> form , lemma <span class="kw">FROM</span> lookup </a>
+<a class="sourceLine" id="cb6-8" title="8">    <span class="kw">WHERE</span> form <span class="kw">IN</span> (<span class="kw">SELECT</span> form <span class="kw">FROM</span> lookup <span class="kw">GROUP</span> <span class="kw">BY</span> form <span class="kw">HAVING</span> <span class="fu">count</span>(form) <span class="op">=</span> <span class="dv">1</span>);</a></code></pre></div>
+<h2 id="all-female-name-forms">All female name forms</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sql"><code class="sourceCode sql"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">SELECT</span> <span class="fu">count</span>(<span class="kw">DISTINCT</span> form) <span class="kw">FROM</span> words <span class="kw">WHERE</span> tags <span class="kw">like</span> <span class="st">&#39;%Ant%&#39;</span> <span class="kw">AND</span> gender <span class="op">=</span> <span class="st">&#39;Fem&#39;</span>;</a></code></pre></div>
+<h1 id="creating-the-morphological-dictionary">Creating the morphological dictionary</h1>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>First python3 and pip3 should be installed in your working environment</p>
+<p>The you must install pymediawiki package using</p>
+<pre><code>pip3 install pymediawiki</code></pre>
+<p>In some OSes (like freebsd) it may be necessary to install the python3 SQLite3 package</p>
+<h2 id="running-the-script">Running the script</h2>
+<p>In order to run the script for a small testing subset of the lemmas you run</p>
+<pre><code>python3 getpages.py</code></pre>
+<p>To run for all the lemmas you execute</p>
+<pre><code>python3 getpages.py --production</code></pre>
+<p><strong>NOTICE:</strong> Creating the whole dictionary is a very time consuming process. It takes about 2 days during which you must have a stable internet connection. If the script stops for various reasons you re-run it. It will automatically continue from the point it stopped.</p>
+<h2 id="running-on-the-wiktionary-dump">Running on the wiktionary dump</h2>
+<p>In order to include synonyms,antonyms,normalizations and translations to the database you must first download the latest el.wiktionary xml dump from <a href="https://dumps.wikimedia.org/elwiktionary/latest/elwiktionary-latest-pages-articles-multistream.xml.bz2">here</a>.</p>
+<p>After you extract it, you run</p>
+<pre><code>python3 parse_dump.py path_to_wiktionary_xml path_to_dict.db</code></pre>
+<p><strong>NOTICE:</strong> Running this script requires about 4.5 GB of free RAM. # Instructions for creating a word list suitable for a spelling dictionary</p>
+<p>The most important factor for a good spelling dictionary is the quality of the texts used. As more text sources are used, spelling errors are accumulated in the final dictionary.</p>
+<h2 id="pipeline">Pipeline</h2>
+<p>Stages</p>
+<ol type="1">
+<li><p><em>(optional)</em> text preprocess script depending on the type of the text</p></li>
+<li><p>a tokenizer outputting result as one word per line (only greek words without puctuation or symbols). For this task we use the tokenizer found in fast-tokenizer submodule. If a line contains a decimal number after the word, it is assumed that the number is the frequency of the word. This is useful when spelling dictionaries with frequency information are concatenated.</p></li>
+<li><p>word_post_process.py script that removes common spelling errors and outputs a dictionary with frequency information</p></li>
+</ol>
+<h2 id="example-usage">Example usage</h2>
+<p>Dictionary for Greek Wikipedia dump with frequency information</p>
+<pre><code>bzcat wiki.dump.bz2 | ftok -a greek | python3 word_post_process.py --min-freq 2 &gt; dict.dic</code></pre>
+<p><em>ftok -a greek</em> performs tokenization of the text from stdin and outputs to stdout only greek words</p>
+<p>As Wikipedia contains many spelling errors, we include words having frequency at least 2</p>
+<p>It is advised to use text sources with better spelling quality than Wikipedia</p>
+<h1 id="future-improvements">Future improvements</h1>
+<h2 id="morphological-dictionary">Morphological dictionary</h2>
+<p>The morphological dictionary found in this repo contains information found in el.wiktionary.org. Thus the best way to contribute, is to add inflection tables in el.wiktionary.org for lemmas that don’t have one. You can about the articles’ stucture <a href="https://el.wiktionary.org/wiki/%CE%92%CE%B9%CE%BA%CE%B9%CE%BB%CE%B5%CE%BE%CE%B9%CE%BA%CF%8C:%CE%94%CE%BF%CE%BC%CE%AE_%CF%84%CF%89%CE%BD_%CE%AC%CF%81%CE%B8%CF%81%CF%89%CE%BD"><strong>here</strong></a> and a list of inflection templates <a href="https://el.wiktionary.org/wiki/%CE%9A%CE%B1%CF%84%CE%B7%CE%B3%CE%BF%CF%81%CE%AF%CE%B1:%CE%A0%CF%81%CF%8C%CF%84%CF%85%CF%80%CE%B1_%CE%BA%CE%BB%CE%AF%CF%83%CE%B5%CF%89%CE%BD_(%CE%B5%CE%BB%CE%BB%CE%B7%CE%BD%CE%B9%CE%BA%CE%AC)"><strong>here</strong></a>.</p>
+</body>
+</html>
