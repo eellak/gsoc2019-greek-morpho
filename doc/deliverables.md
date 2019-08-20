@@ -1,22 +1,20 @@
 
 # Deliverables
 
-## Morphological dictionary
+## Morphological database
 
-An SQLite3 database containing the following data.
+ An SQL database (https://github.com/eellak/gsoc2019-greek-morpho/tree/master/data/morph-dict-v0.2.zip) containing the following data 
+ 1. A morphological dictionary containing about `900.000` entries, with `518.000` distinct surface forms with information described according to Universal Dependencies.
+ 2. Definitions for most lemmas
+ 3. Etymologies for most lemmas
+ 4. `18500` Synonyms, `12500` of which are for Greek
+ 5. `5500` Antonyms, `4300` of which are for Greek
+ 6. `3310` Normalizations of words
+ 7. Almost `150.000` Translations
 
-About 91200 lemmas with about 900000 surface forms with morphological information
-, 518000 of which are distinct. The Morphological tags are based on Universal Dependencies.
-Unfortunately about 35000 of the lemmas are incomplete, meaning the database doesn't contain
-their inflected forms, because there is no inflection table in el.wiktionary.org.
-This is an area for future improvement.
+## Spelling dictionary
 
-Apart from the morphological dictionary, the database also contains
-1. Definitions
-2. Etymologies
-2. Synonyms
-3. Antonyms
-4. Normalized forms (επτά-εφτά)
-5. Translations
-
+ A spelling dictionary with `1.047.200` words, up from the `828.807` of the previous dictionary used in open source programs.
+The dictionary also includes frequencies for all words. (https://github.com/eellak/gsoc2019-greek-morpho/tree/master/data)
+It will be integrated into spelling dictionaries of Firefox and Thunderbird.
 

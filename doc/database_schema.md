@@ -57,13 +57,13 @@ CREATE TABLE IF NOT EXISTS norm(
 
 CREATE TABLE IF NOT EXISTS translations(
 	src TEXT NOT NULL,
-	src\_lemma TEXT NOT NULL,
+	src_lemma TEXT NOT NULL,
 	dest TEXT NOT NULL,
-	dest\_lemma TEXT NOT NULL,
+	dest_lemma TEXT NOT NULL,
 	sense TEXT
 );
 
-CREATE INDEX IF NOT EXISTS form\_indes ON words(form);
+CREATE INDEX IF NOT EXISTS form_index ON words(form);
 ```
 
 Data is described according to Universal Dependencies. Because tags for verbs are very complicated, an additional attribute greek\_pos was added that simplifies pos information. Because case is a reserved word, the greek word ptosi was used instead.

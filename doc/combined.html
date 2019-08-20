@@ -206,19 +206,19 @@ apt install sqlite3</code></pre>
 <a class="sourceLine" id="cb5-52" title="52"></a>
 <a class="sourceLine" id="cb5-53" title="53"><span class="kw">CREATE</span> <span class="kw">TABLE</span> <span class="cf">IF</span> <span class="kw">NOT</span> <span class="kw">EXISTS</span> translations(</a>
 <a class="sourceLine" id="cb5-54" title="54">    src TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</a>
-<a class="sourceLine" id="cb5-55" title="55">    src\_lemma TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</a>
+<a class="sourceLine" id="cb5-55" title="55">    src_lemma TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</a>
 <a class="sourceLine" id="cb5-56" title="56">    dest TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</a>
-<a class="sourceLine" id="cb5-57" title="57">    dest\_lemma TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</a>
+<a class="sourceLine" id="cb5-57" title="57">    dest_lemma TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>,</a>
 <a class="sourceLine" id="cb5-58" title="58">    sense TEXT</a>
 <a class="sourceLine" id="cb5-59" title="59">);</a>
 <a class="sourceLine" id="cb5-60" title="60"></a>
-<a class="sourceLine" id="cb5-61" title="61"><span class="kw">CREATE</span> <span class="kw">INDEX</span> <span class="cf">IF</span> <span class="kw">NOT</span> <span class="kw">EXISTS</span> form\_indes <span class="kw">ON</span> words(form);</a></code></pre></div>
+<a class="sourceLine" id="cb5-61" title="61"><span class="kw">CREATE</span> <span class="kw">INDEX</span> <span class="cf">IF</span> <span class="kw">NOT</span> <span class="kw">EXISTS</span> form_index <span class="kw">ON</span> words(form);</a></code></pre></div>
 <p>Data is described according to Universal Dependencies. Because tags for verbs are very complicated, an additional attribute greek_pos was added that simplifies pos information. Because case is a reserved word, the greek word ptosi was used instead.</p>
 <p>The attribute tags contains additional <em>space seperated</em> information described as follows:</p>
 <ul>
 <li><strong>Ant</strong>: Anthroponym</li>
 <li><strong>Top</strong>: Toponym</li>
-<li><strong>City</strong>,<strong>Country</strong>,<strong>Europe</strong>,<strong>Greece</strong>,<strong>EuropeanUnion</strong>,<strong>Informatics</strong>: Self explained</li>
+<li><strong>City</strong>, <strong>Country</strong>, <strong>Europe</strong>, <strong>Greece</strong>, <strong>EuropeanUnion</strong>, <strong>Informatics</strong>: Self explained</li>
 <li><strong>Element</strong>: Chemical Element</li>
 <li><strong>PolyTerm</strong>: Term composed of multiple words</li>
 <li><strong>Incomplete</strong>: No inflection table or gender(for nouns) found</li>

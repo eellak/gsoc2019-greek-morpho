@@ -58,4 +58,4 @@ CREATE TABLE IF NOT EXISTS translations(
 	sense TEXT
 );
 
-CREATE INDEX IF NOT EXISTS form_indes ON words(form);
+CREATE INDEX IF NOT EXISTS form_index ON words(form);
