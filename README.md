@@ -2,13 +2,24 @@
 
 ## Dictionary Download
 
-The version v0.2 of the morphological dictionary can be found [here](data/morph-dict-v0.2.zip).
+* An SQL database (/data/morph-dict-v0.2.zip) containing the following data 
+ 1. A morphological dictionary containing about `900.000` entries, with `518.000` distinct surface forms with information described according to Universal Dependencies.
+ 2. Definitions for most lemmas
+ 3. Etymologies for most lemmas
+ 4. `18500` Synonyms, `12500` of which are for Greek
+ 5. `5500` Antonyms, `4300` of which are for Greek
+ 6. `3310` Normalizations of words
+ 7. Almost `150.000` Translations
 
-It contains about 518000 distinct surface forms and about 900000 forms with morphological information. 
+* A spelling dictionary with `1.047.200` words, up from the `828.807` of the previous dictionary used in open source programs.
+The dictionary also includes frequencies for all words. (/data)
+It will be integrated into spelling dictionaries of Firefox and Thunderbird.
 
-The spelling dictionary is found [here](data/)
+## Documentation
 
-## Running the script
+Documentation can be in the directory (/data)
+
+### Running the script
 
 Information about running the script is found [here](doc/wiktionary_script.md)
 
@@ -18,14 +29,6 @@ During the summer a Morphological dictionary in sqlite3 format will be created.
 Information will be extracted automatically with a python script and using
 the pymediawiki library. In addition words and morphological information
 will be added to the spelling tool dictionaries.
-
-## Deliverables
-
-1. A Morphological dictionary of Greek in SQLite3 format that includes complete morphology for 
- Nouns, Proper Nouns, Adjectives, Verbs, Prepositions, Adverbs, Acronyms
- with information automatically extracted from the Greek wiktionary
- using Universal Dependencies Tagset.
-2. Addition of the extracted words to open source spelling dictionaries.
 
 ## Final Report
 
