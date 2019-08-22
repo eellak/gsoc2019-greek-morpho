@@ -17,7 +17,7 @@ It will be integrated into spelling dictionaries of Firefox and Thunderbird.
 
 ## Documentation
 
-Documentation can be in the directory (/data)
+Documentation can be in the directory [**data**](/data)
 
 ### Running the script
 
