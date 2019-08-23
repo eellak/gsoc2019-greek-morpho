@@ -23,16 +23,16 @@ Documentation can be in the directory [**data**](/data)
 
 Information about running the script is found [here](doc/wiktionary_script.md)
 
+## Final Report
+
+You can find the final report in the following [gist](https://gist.github.com/algorithm314/449e301c331c7d91a5116c0d00703a20).
+
 ## Project goals
 
 During the summer a Morphological dictionary in sqlite3 format will be created.
 Information will be extracted automatically with a python script and using
 the pymediawiki library. In addition words and morphological information
 will be added to the spelling tool dictionaries.
-
-## Final Report
-
-You can find the final report in the following [gist](https://gist.github.com/algorithm314/449e301c331c7d91a5116c0d00703a20).
 
 ## Timeline
 
@@ -53,7 +53,7 @@ Addition of remaining parts of speech to the Morphological dictionary and
 
 * Google summer of code participant: Konstantinos Agiannis
 * Mentor: Kostas Papadimas
-* Mentor: Diomidis Spinellis
+* Mentor: Theodoros Karounos
 * Mentor: Alexios Zavras
 
 
