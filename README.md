@@ -21,11 +21,11 @@ Documentation can be in the directory [**data**](/data)
 
 ### Running the script
 
-Information about running the script is found [here](doc/wiktionary_script.md)
+Information about running the script is found [**here**](doc/wiktionary_script.md)
 
 ## Final Report
 
-You can find the final report in the following [gist](https://gist.github.com/algorithm314/449e301c331c7d91a5116c0d00703a20).
+You can find the final report in the following [**gist**](https://gist.github.com/algorithm314/449e301c331c7d91a5116c0d00703a20).
 
 ## Project goals
 
@@ -59,9 +59,9 @@ Addition of remaining parts of speech to the Morphological dictionary and
 
 ## License
 
-The source code is under GPLv3.
+The source code is under **GPLv3**.
 
-The produced database with the morphological dictionary is under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)
+The produced database with the morphological dictionary is under [**CC BY-SA 3.0**](https://creativecommons.org/licenses/by-sa/3.0/)
 
 ## Links
 
