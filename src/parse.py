@@ -63,7 +63,7 @@ def lemma_exists(lemma,table):
 def parse_code(lemma, code):
 
 	res = re.search(r"====? Ετυμολογία ====?\n+[^=\s\n]+\s*(?P<ETM>.+?)\n(?=\n==)", code, re.DOTALL|re.UNICODE)
-	if res is not None and res.group('ETM') != '< → Η ετυμολογία λείπει.':
+	if res is not None and res.group('ETM').strip() not in ['','< → Η ετυμολογία λείπει.', '< → λείπει η ετυμολογία']:
 		if not lemma_exists(lemma,'etymology'):
 			cur.execute("INSERT INTO etymology VALUES (?,?)" , (lemma, res.group('ETM').strip()))
 	else:
@@ -71,7 +71,7 @@ def parse_code(lemma, code):
 
 	res = re.search(r"====? (Ουσιαστικό|Ρήμα|Επίθετο|Μετοχή|Κύριο\sόνομα|Πολυλεκτικός\sόρος|Αριθμητικό|Ρηματικός\sτύπος) ====?\n+[^\n]*\n+(?P<DEF>.+?)(?=\n==)", code, re.DOTALL|re.UNICODE)
 
-	if res is not None and res.group('DEF') not in ['\n', '→ Λείπει ο ορισμός (ή οι ορισμοί) αυτής της λέξης.']:
+	if res is not None and res.group('DEF').strip() not in ['', '→ Λείπει ο ορισμός (ή οι ορισμοί) αυτής της λέξης.','→ λείπει ο ορισμός (ή οι ορισμοί)']:
 		if not lemma_exists(lemma,'def'):
 			cur.execute("INSERT INTO def VALUES (?,?)" , (lemma, res.group('DEF').strip()))
 	else:
