@@ -25,7 +25,7 @@ Information about running the script is found [**here**](doc/wiktionary_script.m
 
 ## Final Report
 
-You can find the final report in the following [**gist**](https://gist.github.com/algorithm314/449e301c331c7d91a5116c0d00703a20).
+You can find the final report in the following [**gist**](https://gist.github.com/kagiannis/449e301c331c7d91a5116c0d00703a20).
 
 ## Project goals
 
